@@ -17,5 +17,18 @@
 
   .control {
     width: 30%;
+    float: left;
+  }
+
+  .visualization {
+    width: 70%;
+    height: 100%;
+    float: right;
+    text-align: center;
+
+    svg {
+      align-self: center;
+      height: 100%;
+    }
   }
 }
