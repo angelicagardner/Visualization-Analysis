@@ -1,4 +1,5 @@
 import os
+
 from flask import Flask, Blueprint, request, jsonify
 from datetimerange import DateTimeRange
 from flask_sqlalchemy import SQLAlchemy
@@ -31,7 +32,7 @@ class Message(db.Model):
     is_repost = db.Column(db.Boolean, nullable=False)
     number_of_reposts = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, time, location, account, original_message, message, hashtag, repost, mention, is_repost, number_of_reposts):
+    def __init__(self, time, location, account, original_message, message, hashtag, mention, is_repost, number_of_reposts):
         self.time = time
         self.location = location
         self.account = account
@@ -41,6 +42,9 @@ class Message(db.Model):
         self.mention = mention
         self.is_repost = is_repost
         self.number_of_reposts = number_of_reposts
+
+    def __repr__(self):
+        return '<Message %r>' % self.id
 
 
 class MessageSchema(ma.Schema):
@@ -52,8 +56,28 @@ class MessageSchema(ma.Schema):
 message_schema = MessageSchema()
 messages_schema = MessageSchema(many=True)
 
+#import pandas as pd
+#from pathlib import Path
+# def load_data_into_DB():
+#     current_path = Path('.').resolve()
+#     data = pd.read_csv(current_path / '..' / 'data' / 'YInt_preprocessed.csv')
+#     for index, row in data.iterrows():
+#         try:
+#             print(index)
+#             db.session.add(Message(row['time'], row['location'], row['account'], row['original_message'],
+#                                    row['message'], row['hashtag'], row['mention'], row['is_repost'], row['number_reposts']))
+#             db.session.commit()
+#         except Exception as e:
+#             db.session.rollback()
+#             print(e)
+#         finally:
+#             db.session.close()
 
-@v1.route('/messages', methods=['GET'])
+
+# load_data_into_DB()
+
+
+@ v1.route('/messages', methods=['GET'])
 def get_messages():
     """
     Get all messages or all messages between a specified date range.
@@ -64,17 +88,13 @@ def get_messages():
     if start_date and end_date:
         datetime_range = DateTimeRange(start_date, end_date)
 
-    messages = {0: {'time': '2020-04-06 00:00:00', 'location': 'Weston', 'account': 'Opportunities2', 'message': 'Take advantheeseage of theesehese One, theeserembling sales!'},
-                1: {'time': '2020-04-06 00:00:00', 'location': 'Southton', 'account': 'LazyBCouch', 'message': "@WatchesThomasBird fork it you're back in he someneomething he someneomeone mieten und behinderte they die or he Timberlake #MakesItyoureCan"}}
+    all_messages = Message.query.all()
+    result = messages_schema.dump(all_messages)
 
-    #all_messages = Message.query.all()
-    #result = messages_schema.dump(all_messages)
-    # return jsonify(result.data)
-
-    return jsonify(messages)
+    return jsonify(result)
 
 
-@v1.route('/bow', methods=['GET'])
+@ v1.route('/bow', methods=['GET'])
 def get_bow():
     """
     Get a Bag-of-Words representation of all messages or all messages between a specified date range.
@@ -92,7 +112,7 @@ def get_bow():
     return jsonify(bow)
 
 
-@v1.route('/topics', methods=['GET'])
+@ v1.route('/topics', methods=['GET'])
 def get_topics():
     """
     Count words in messages and group them by similar word patterns to infer topics.
