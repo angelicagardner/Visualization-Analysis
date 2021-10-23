@@ -1,0 +1,21 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: space-between;
+  height: 100%;
+
+  .navigation {
+    h1 {
+      padding: 1rem;
+    }
+  }
+
+  .main-container {
+    min-height: 60vh;
+  }
+
+  .control {
+    width: 30%;
+  }
+}

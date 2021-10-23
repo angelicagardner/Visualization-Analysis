@@ -20,9 +20,9 @@ function TimeLine() {
     autobinx: false,
     histnorm: 'count',
     marker: {
-      color: 'rgba(255, 100, 102, 0.7)',
+      color: '#FB8072',
       line: {
-        color: 'rgba(255, 100, 102, 1)',
+        color: '#FF5042',
         width: 1,
       },
     },
@@ -39,7 +39,7 @@ function TimeLine() {
     y: y2,
     autobinx: false,
     marker: {
-      color: 'rgba(100, 200, 102, 0.7)',
+      color: '#B3DE69',
       line: {
         color: 'rgba(100, 200, 102, 1)',
         width: 1,
@@ -56,20 +56,43 @@ function TimeLine() {
   };
   let data = [trace1, trace2];
   return (
-    <div>
       <Plot
         data={data}
         layout={{
-          bargap: 0.05,
+          responsive: true,
+          showlegend:false,
+          bargap: 0.02,
           bargroupgap: 0.2,
           barmode: 'stack',
-          title: 'Sampled Results',
-          xaxis: { title: 'Value' },
-          yaxis: { title: 'Count' },
+          title: {
+            text:'Message Distribution',
+          },
+          margin:{l:25, r:25, t:35, b:25},
+          paper_bgcolor:'transparent',
+          plot_bgcolor:'transparent',
+          yaxis: {
+            gridcolor: "rgba(255,255,255,0.25)",
+            gridwidth: 1,
+            zerolinecolor: "rgba(255,255,255,0.5)",
+            zerolinewidth: 1,
+          },
+          xaxis: {
+            gridcolor: "rgba(255,255,255,0.25)",
+            gridwidth: 1,  
+            zerolinecolor: "rgba(255,255,255,0.5)",
+            zerolinewidth: 1, 
+          },
+          font:{color:'white'}
         }}
-      />
-    </div>
-  );
+        config={{
+          frameMargins:0,
+        }}
+        style={{
+          maxHeight:250,
+          margin:0,
+          padding:0,
+        }}
+      />  );
 }
 
 export default TimeLine;
