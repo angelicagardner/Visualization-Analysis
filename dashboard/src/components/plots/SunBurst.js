@@ -3,7 +3,6 @@ import Plot from 'react-plotly.js';
 
 function SunBurst() {
   return (
-    <div>
       <Plot
         data={[
           {
@@ -67,12 +66,17 @@ function SunBurst() {
             marker: { line: { width: 2 } },
           },
         ]}
+        config={{
+          responsive: true,
+        }}
         layout={{
+          autosize: true,
           margin: { l: 0, r: 0, b: 0, t: 0 },
           sunburstcolorway: ['#636efa', '#ef553b', '#00cc96'],
+          paper_bgcolor:'transparent'
         }}
+        style={{}}
       />
-    </div>
   );
 }
 

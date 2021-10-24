@@ -48,7 +48,7 @@ const callbacks = {
 
 function WordCloud() {
   return (
-    <div className="App">
+    <div>
       <ReactWordCloud callbacks={callbacks} options={options} words={words} />
     </div>
   );
