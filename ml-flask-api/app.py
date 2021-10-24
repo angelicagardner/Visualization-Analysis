@@ -1,5 +1,3 @@
-#import pandas as pd
-#from pathlib import Path
 import os
 
 from flask import Flask, Blueprint, request, jsonify
@@ -58,7 +56,8 @@ class MessageSchema(ma.Schema):
 message_schema = MessageSchema()
 messages_schema = MessageSchema(many=True)
 
-
+#import pandas as pd
+#from pathlib import Path
 # def load_data_into_DB():
 #     current_path = Path('.').resolve()
 #     data = pd.read_csv(current_path / '..' / 'data' / 'YInt_preprocessed.csv')
