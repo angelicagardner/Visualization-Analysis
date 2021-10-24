@@ -2,7 +2,7 @@ import React from 'react';
 import TimeLine from './plots/TimeLine';
 import WordCloud from './plots/WordCloud';
 import SunBurst from './plots/SunBurst';
-import { ReactComponent as StHimarkMap } from './maps/stHimark.svg';
+import CustomMap from './maps/CustomMap';
 
 function Dashboard() {
   return (
@@ -12,11 +12,14 @@ function Dashboard() {
       </div>
       <div className="main-container">
         <div className="control">
-          <WordCloud />
+          <div className="word-clouds">
+            <WordCloud />
+            <WordCloud />
+          </div>
           <SunBurst />
         </div>
         <div className="visualization">
-          <StHimarkMap />
+          <CustomMap />
         </div>
       </div>
       <div className="timeline">
