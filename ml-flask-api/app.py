@@ -26,7 +26,7 @@ class Message(db.Model):
     location = db.Column(db.String(100), nullable=False)
     account = db.Column(db.String(100), nullable=False)
     original_message = db.Column(db.String(100), nullable=False)
-    message = db.Column(db.String(100), nullable=False)
+    message = db.Column(db.String(100))
     hashtag = db.Column(db.String(100))
     mention = db.Column(db.String(100))
     is_repost = db.Column(db.Boolean, nullable=False)
@@ -72,9 +72,6 @@ messages_schema = MessageSchema(many=True)
 #             print(e)
 #         finally:
 #             db.session.close()
-
-
-# load_data_into_DB()
 
 
 @v1.route('/messages', methods=['GET'])
