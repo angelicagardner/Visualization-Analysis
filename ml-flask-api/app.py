@@ -26,7 +26,7 @@ class Message(db.Model):
     location = db.Column(db.String(100), nullable=False)
     account = db.Column(db.String(100), nullable=False)
     original_message = db.Column(db.String(100), nullable=False)
-    message = db.Column(db.String(100), nullable=False)
+    message = db.Column(db.String(100))
     hashtag = db.Column(db.String(100))
     mention = db.Column(db.String(100))
     is_repost = db.Column(db.Boolean, nullable=False)
@@ -56,11 +56,25 @@ class MessageSchema(ma.Schema):
 message_schema = MessageSchema()
 messages_schema = MessageSchema(many=True)
 
+#import pandas as pd
+#from pathlib import Path
+# def load_data_into_DB():
+#     current_path = Path('.').resolve()
+#     data = pd.read_csv(current_path / '..' / 'data' / 'YInt_preprocessed.csv')
+#     for index, row in data.iterrows():
+#         try:
+#             print(index)
+#             db.session.add(Message(row['time'], row['location'], row['account'], row['original_message'],
+#                                    row['message'], row['hashtag'], row['mention'], row['is_repost'], row['number_reposts']))
+#             db.session.commit()
+#         except Exception as e:
+#             db.session.rollback()
+#             print(e)
+#         finally:
+#             db.session.close()
 
-# load_data_into_DB(db)
 
-
-@ v1.route('/messages', methods=['GET'])
+@v1.route('/messages', methods=['GET'])
 def get_messages():
     """
     Get all messages or all messages between a specified date range.
@@ -77,7 +91,7 @@ def get_messages():
     return jsonify(result)
 
 
-@ v1.route('/bow', methods=['GET'])
+@v1.route('/bow', methods=['GET'])
 def get_bow():
     """
     Get a Bag-of-Words representation of all messages or all messages between a specified date range.
@@ -95,7 +109,7 @@ def get_bow():
     return jsonify(bow)
 
 
-@ v1.route('/topics', methods=['GET'])
+@v1.route('/topics', methods=['GET'])
 def get_topics():
     """
     Count words in messages and group them by similar word patterns to infer topics.
