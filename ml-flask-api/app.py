@@ -77,7 +77,7 @@ messages_schema = MessageSchema(many=True)
 # load_data_into_DB()
 
 
-@ v1.route('/messages', methods=['GET'])
+@v1.route('/messages', methods=['GET'])
 def get_messages():
     """
     Get all messages or all messages between a specified date range.
@@ -94,7 +94,7 @@ def get_messages():
     return jsonify(result)
 
 
-@ v1.route('/bow', methods=['GET'])
+@v1.route('/bow', methods=['GET'])
 def get_bow():
     """
     Get a Bag-of-Words representation of all messages or all messages between a specified date range.
@@ -112,7 +112,7 @@ def get_bow():
     return jsonify(bow)
 
 
-@ v1.route('/topics', methods=['GET'])
+@v1.route('/topics', methods=['GET'])
 def get_topics():
     """
     Count words in messages and group them by similar word patterns to infer topics.
