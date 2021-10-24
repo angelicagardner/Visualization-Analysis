@@ -1,4 +1,5 @@
 import os
+import spacy
 
 from flask import Flask, Blueprint, request, jsonify
 from datetimerange import DateTimeRange
@@ -17,6 +18,11 @@ v1 = Blueprint('v1', __name__, url_prefix='/api/v1')
 # Init db
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+
+nlp = spacy.load('en_core_web_sm')
+# Update spaCy's default stopwords list
+stop_words = ["'s", "m", "u", "o", "s"]
+nlp.Defaults.stop_words.update(stop_words)
 
 
 class Message(db.Model):
@@ -56,23 +62,6 @@ class MessageSchema(ma.Schema):
 message_schema = MessageSchema()
 messages_schema = MessageSchema(many=True)
 
-#import pandas as pd
-#from pathlib import Path
-# def load_data_into_DB():
-#     current_path = Path('.').resolve()
-#     data = pd.read_csv(current_path / '..' / 'data' / 'YInt_preprocessed.csv')
-#     for index, row in data.iterrows():
-#         try:
-#             print(index)
-#             db.session.add(Message(row['time'], row['location'], row['account'], row['original_message'],
-#                                    row['message'], row['hashtag'], row['mention'], row['is_repost'], row['number_reposts']))
-#             db.session.commit()
-#         except Exception as e:
-#             db.session.rollback()
-#             print(e)
-#         finally:
-#             db.session.close()
-
 
 @v1.route('/messages', methods=['GET'])
 def get_messages():
@@ -98,13 +87,25 @@ def get_bow():
     """
     start_date = request.args.get('start', default=None, type=str)
     end_date = request.args.get('end', default=None, type=str)
+    bow = {}
 
-    # check that start and end was provided
     if start_date and end_date:
-        datetime_range = DateTimeRange(start_date, end_date)
+        messages = Message.query.filter(
+            Message.time.between(start_date, end_date)).all()
+    else:
+        messages = Message.query.all()
 
-    bow = {'help': 12, 'water': 10, 'food': 8, 'money': 7, 'love': 6,
-           'family': 5, 'friends': 4, 'fun': 3, 'work': 2, 'school': 1}
+    for message in messages:
+        if message.message:
+            words = nlp(message.message)
+            for word in words:
+                if not word.is_stop and not word.is_punct and not word.is_space and not word.is_digit:
+                    if word.text.lower() in bow:
+                        bow[word.text.lower()] += 1
+                    else:
+                        bow[word.text.lower()] = 1
+
+    bow = sorted(bow.items(), key=lambda x: x[1], reverse=True)
 
     return jsonify(bow)
 
