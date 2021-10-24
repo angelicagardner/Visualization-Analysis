@@ -87,14 +87,14 @@ def get_bow():
     """
     start_date = request.args.get('start', default=None, type=str)
     end_date = request.args.get('end', default=None, type=str)
-
-    # check that start and end was provided
-    if start_date and end_date:
-        datetime_range = DateTimeRange(start_date, end_date)
-
     bow = {}
 
-    messages = Message.query.all()
+    if start_date and end_date:
+        messages = Message.query.filter(
+            Message.time.between(start_date, end_date)).all()
+    else:
+        messages = Message.query.all()
+
     for message in messages:
         if message.message:
             words = nlp(message.message)
@@ -110,7 +110,7 @@ def get_bow():
     return jsonify(bow)
 
 
-@v1.route('/topics', methods=['GET'])
+@ v1.route('/topics', methods=['GET'])
 def get_topics():
     """
     Count words in messages and group them by similar word patterns to infer topics.
