@@ -110,7 +110,7 @@ def get_bow():
     return jsonify(bow)
 
 
-@ v1.route('/topics', methods=['GET'])
+@v1.route('/topics', methods=['GET'])
 def get_topics():
     """
     Count words in messages and group them by similar word patterns to infer topics.
