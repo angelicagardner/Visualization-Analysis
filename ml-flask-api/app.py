@@ -1,3 +1,5 @@
+#import pandas as pd
+#from pathlib import Path
 import os
 
 from flask import Flask, Blueprint, request, jsonify
@@ -26,7 +28,7 @@ class Message(db.Model):
     location = db.Column(db.String(100), nullable=False)
     account = db.Column(db.String(100), nullable=False)
     original_message = db.Column(db.String(100), nullable=False)
-    message = db.Column(db.String(100), nullable=False)
+    message = db.Column(db.String(100))
     hashtag = db.Column(db.String(100))
     mention = db.Column(db.String(100))
     is_repost = db.Column(db.Boolean, nullable=False)
@@ -56,8 +58,7 @@ class MessageSchema(ma.Schema):
 message_schema = MessageSchema()
 messages_schema = MessageSchema(many=True)
 
-# from pathlib import Path
-# import pandas as pd
+
 # def load_data_into_DB():
 #     current_path = Path('.').resolve()
 #     data = pd.read_csv(current_path / '..' / 'data' / 'YInt_preprocessed.csv')
@@ -74,10 +75,7 @@ messages_schema = MessageSchema(many=True)
 #             db.session.close()
 
 
-# load_data_into_DB()
-
-
-@ v1.route('/messages', methods=['GET'])
+@v1.route('/messages', methods=['GET'])
 def get_messages():
     """
     Get all messages or all messages between a specified date range.
@@ -94,7 +92,7 @@ def get_messages():
     return jsonify(result)
 
 
-@ v1.route('/bow', methods=['GET'])
+@v1.route('/bow', methods=['GET'])
 def get_bow():
     """
     Get a Bag-of-Words representation of all messages or all messages between a specified date range.
@@ -112,7 +110,7 @@ def get_bow():
     return jsonify(bow)
 
 
-@ v1.route('/topics', methods=['GET'])
+@v1.route('/topics', methods=['GET'])
 def get_topics():
     """
     Count words in messages and group them by similar word patterns to infer topics.
