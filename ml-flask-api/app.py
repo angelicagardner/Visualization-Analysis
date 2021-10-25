@@ -2,9 +2,10 @@ import os
 import spacy
 
 from flask import Flask, Blueprint, request, jsonify
-from datetimerange import DateTimeRange
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from gensim.corpora import Dictionary
+from gensim.models import LdaModel
 
 # Init app
 app = Flask(__name__)
@@ -120,16 +121,43 @@ def get_topics():
     If predefined labels for topics are provided, messages will be classified into the most likely topic.
     """
     params = request.args.to_dict(flat=False)
-
-    if params:
-        if params['start'] and params['end']:
-            datetime_range = DateTimeRange(
-                params['start'][0], params['end'][0])
-
-        if 'labels' in params.keys():
-            labels = params['labels'][0].split(',')
-
+    try:
+        num_topics = int(params.get('num_topics')[0])
+    except:
+        num_topics = 10
+    try:
+        start_date = params['start'][0]
+        end_date = params['end'][0]
+    except KeyError:
+        start_date = None
+        end_date = None
     topics = {}
+
+    # TODO: Implement topic classification
+    # if 'labels' in params.keys():
+    #     labels = params['labels'][0].split(',')
+
+    if start_date and end_date:
+        messages = Message.query.filter(
+            Message.time.between(start_date, end_date)).all()
+    else:
+        messages = Message.query.all()
+
+    doc = []
+    for message in messages:
+        if message.message:
+            words = nlp(message.message.lower())
+            text = []
+            for word in words:
+                if not word.is_stop and not word.is_punct and not word.is_space and not word.is_digit:
+                    text.append(word.lemma_)
+            doc.append(text)
+
+    dictionary = Dictionary(doc)
+    corpus = [dictionary.doc2bow(text) for text in doc]
+    lda = LdaModel(corpus=corpus, id2word=dictionary, num_topics=num_topics)
+
+    topics = (lda.print_topics(num_topics=num_topics))
 
     return jsonify(topics)
 
