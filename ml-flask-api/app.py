@@ -72,9 +72,11 @@ def get_messages():
     end_date = request.args.get('end', default=None, type=str)
 
     if start_date and end_date:
-        datetime_range = DateTimeRange(start_date, end_date)
+        all_messages = Message.query.filter(
+            Message.time.between(start_date, end_date)).all()
+    else:
+        all_messages = Message.query.all()
 
-    all_messages = Message.query.all()
     result = messages_schema.dump(all_messages)
 
     return jsonify(result)
