@@ -3,6 +3,7 @@ import spacy
 
 from flask import Flask, Blueprint, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql.functions import func
 from flask_marshmallow import Marshmallow
 from gensim.corpora import Dictionary
 from gensim.models import LdaModel
@@ -57,7 +58,7 @@ class Message(db.Model):
 class MessageSchema(ma.Schema):
     class Meta:
         fields = ('id', 'time', 'location', 'account', 'original_message',
-                  'message', 'hashtag', 'mention', 'is_repost', 'number_of_reposts')
+                  'message', 'hashtag', 'mention', 'is_repost', 'number_of_reposts','numberOfMessages')
 
 
 message_schema = MessageSchema()
@@ -74,7 +75,45 @@ def get_messages():
 
     if start_date and end_date:
         all_messages = Message.query.filter(
-            Message.time.between(start_date, end_date)).all()
+            Message.time.between(start_date, end_date)
+            ).all()
+    else:
+        all_messages = Message.query.all()
+
+    result = messages_schema.dump(all_messages)
+
+    return jsonify(result)
+
+@v1.route('/locations', methods=['GET'])
+def get_locations():
+    """
+    Get all messages or all messages between a specified date range.
+    """
+    start_date = request.args.get('start', default=None, type=str)
+    end_date = request.args.get('end', default=None, type=str)
+
+    if start_date and end_date:
+        all_messages = db.session.query(Message.location, func.count(Message.id).label('id')).group_by(Message.location).all()
+
+    else:
+        all_messages = Message.query.all()
+
+    result = messages_schema.dump(all_messages)
+
+    return jsonify(result)
+
+@v1.route('/timeline', methods=['GET'])
+def get_timeline():
+    """
+    Get all messages or all messages between a specified date range.
+    """
+    start_date = request.args.get('start', default=None, type=str)
+    end_date = request.args.get('end', default=None, type=str)
+    time_period  = func.strftime('%Y-%m-%d %H:%M', Message.time)
+
+    if start_date and end_date:
+        all_messages = db.session.query(time_period.label('time'), func.count(Message.id).label('numberOfMessages')).group_by(time_period).all()
+
     else:
         all_messages = Message.query.all()
 
@@ -94,9 +133,10 @@ def get_bow():
 
     if start_date and end_date:
         messages = Message.query.filter(
-            Message.time.between(start_date, end_date)).all()
+            Message.time.between(start_date, end_date),Message.is_repost == False).all()
     else:
-        messages = Message.query.all()
+        messages = Message.query.filter(
+            Message.is_repost == False).all()
 
     for message in messages:
         if message.message:
@@ -139,9 +179,9 @@ def get_topics():
 
     if start_date and end_date:
         messages = Message.query.filter(
-            Message.time.between(start_date, end_date)).all()
+            Message.time.between(start_date, end_date),Message.is_repost == False).all()
     else:
-        messages = Message.query.all()
+        messages = Message.query.filter(Message.is_repost == False).all()
 
     doc = []
     for message in messages:
