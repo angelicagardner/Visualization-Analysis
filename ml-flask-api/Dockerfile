@@ -19,8 +19,6 @@ RUN apt-get update \
     liblapack-dev \
     libatlas-base-dev \
     && apt-get clean
-RUN pip install --upgrade pip
-RUN pip install scipy gensim
 RUN pip install --no-cache-dir -r requirements.txt
 RUN python -m spacy download en_core_web_sm
 
