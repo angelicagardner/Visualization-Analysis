@@ -1,8 +1,8 @@
-FROM python:3.9-bullseye
+FROM python:3.8-slim-buster
 
-WORKDIR /ml-flask-api/
+WORKDIR /app
 
-COPY requirements.txt ./
+COPY ml-flask-api/requirements.txt ./
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get autoremove -y \
@@ -22,7 +22,7 @@ RUN apt-get update \
 RUN pip install --no-cache-dir -r requirements.txt
 RUN python -m spacy download en_core_web_sm
 
-COPY . .
+COPY /ml-flask-api /app
 
 EXPOSE 5000
 
