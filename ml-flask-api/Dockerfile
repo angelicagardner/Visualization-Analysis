@@ -22,7 +22,7 @@ RUN apt-get update \
 RUN pip install --no-cache-dir -r requirements.txt
 RUN python -m spacy download en_core_web_sm
 
-COPY /ml-flask-api /app
+# COPY /ml-flask-api /app
 
 EXPOSE 5000
 
