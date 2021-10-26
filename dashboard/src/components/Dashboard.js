@@ -28,7 +28,7 @@ function Dashboard() {
           <SunBurst /> */}
         </div>
         <div className="visualization">
-          <CustomMap />
+          <CustomMap timeRange={timeRange} />
         </div>
       </div>
       <div className="timeline">
