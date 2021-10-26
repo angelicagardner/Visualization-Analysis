@@ -93,7 +93,7 @@ def get_locations():
     end_date = request.args.get('end', default=None, type=str)
 
     if start_date and end_date:
-        all_messages = db.session.query(Message.location, func.count(Message.id).label('id')).group_by(Message.location).all()
+        all_messages = db.session.query(Message.location, func.count(Message.id).label('id')).filter( Message.time.between(start_date, end_date)).group_by(Message.location).all()
 
     else:
         all_messages = Message.query.all()
@@ -112,10 +112,10 @@ def get_timeline():
     time_period  = func.strftime('%Y-%m-%d %H:%M', Message.time)
 
     if start_date and end_date:
-        all_messages = db.session.query(time_period.label('time'), func.count(Message.id).label('numberOfMessages')).group_by(time_period).all()
+        all_messages = db.session.query(time_period.label('time'), func.count(Message.id).label('numberOfMessages')).filter( Message.time.between(start_date, end_date)).group_by(time_period).all()
 
     else:
-        all_messages = Message.query.all()
+        all_messages = db.session.query(time_period.label('time'), func.count(Message.id).label('numberOfMessages')).group_by(time_period).all()
 
     result = messages_schema.dump(all_messages)
 
