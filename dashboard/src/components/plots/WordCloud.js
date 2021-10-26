@@ -38,7 +38,7 @@ function getCallback(callback) {
 }
 
 const callbacks = {
-  getWordColor: (word) => (word.value > 50 ? '#94B6E2' : '#E2C094'),
+  getWordColor: (word) => (word.value > 300 ? '#94B6E2' : '#E2C094'),
   getWordTooltip: (word) =>
     `The word "${word.text}" appears ${word.value} times.`,
   onWordClick: getCallback('onWordClick'),

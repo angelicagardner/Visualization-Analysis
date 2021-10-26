@@ -1,63 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
+import { TimeLineRepository } from '../../repositories/timeline.repository';
+import Moment from 'moment'
 
-function TimeLine() {
-  let x1 = [];
-  let x2 = [];
-  let y1 = [];
-  let y2 = [];
-  for (let i = 1; i < 500; i++) {
-    const k = Math.random();
-    x1.push(k * 5);
-    x2.push(k * 10);
-    y1.push(k);
-    y2.push(k * 2);
-  }
-  let trace1 = {
-    x: x1,
-    y: y1,
-    name: 'control',
-    autobinx: false,
-    histnorm: 'count',
-    marker: {
-      color: '#FB8072',
-      line: {
-        color: '#FF5042',
-        width: 1,
-      },
-    },
-    opacity: 0.5,
-    type: 'histogram',
-    xbins: {
-      end: 2.8,
-      size: 0.06,
-      start: 0.5,
-    },
+function TimeLine({callback,timeRange}) {
+  const [timeline,setTimeline] = useState([])
+  
+  useEffect(()=>{
+    const repository = new TimeLineRepository()
+    const loadData = async (start,end) => {
+      let data;
+
+      if(start && end) data = (await repository.getRange(start,end)).data;
+      else data = (await repository.getAll()).data;
+
+      setTimeline( { x: data.map(item=>item.time), y:data.map(item=>item.numberOfMessages)})
+    }
+    
+    loadData(timeRange.start,timeRange.end)
+  },[timeRange])
+
+  const updateHandler = (e)=>{
+    if(e['xaxis.range[0]'] && e['xaxis.range[1]']) callback(Moment(e['xaxis.range[0]']).format('YYYY-MM-DD HH:MM:ss'),Moment(e['xaxis.range[1]']).format('YYYY-MM-DD HH:MM:ss'))
   };
-  let trace2 = {
-    x: x2,
-    y: y2,
-    autobinx: false,
-    marker: {
-      color: '#B3DE69',
-      line: {
-        color: 'rgba(100, 200, 102, 1)',
-        width: 1,
-      },
-    },
-    name: 'experimental',
-    opacity: 0.75,
-    type: 'histogram',
-    xbins: {
-      end: 4,
-      size: 0.06,
-      start: -3.2,
-    },
-  };
-  let data = [trace1, trace2];
+
   return (
       <Plot
-        data={data}
+        data={[{
+          x:timeline.x,
+          y:timeline.y,
+          name: 'control',
+          autobinx: true,
+          histnorm: 'count',
+          marker: {
+            color: '#FB8072',
+            line: {
+              color: '#FF5042',
+              width: 1,
+            },
+          },
+          opacity: 0.5,
+          type: 'histogram',
+        }]}
         layout={{
           responsive: true,
           showlegend:false,
@@ -67,7 +51,7 @@ function TimeLine() {
           title: {
             text:'Message Distribution',
           },
-          margin:{l:25, r:25, t:35, b:25},
+          margin:{l:25, r:25, t:35, b:35},
           paper_bgcolor:'transparent',
           plot_bgcolor:'transparent',
           yaxis: {
@@ -88,10 +72,12 @@ function TimeLine() {
           frameMargins:0,
         }}
         style={{
-          maxHeight:250,
+          maxHeight:200,
           margin:0,
           padding:0,
         }}
+        onRelayout={updateHandler}
+        onDoubleClick={()=>callback(undefined,undefined)}
       />  );
 }
 
