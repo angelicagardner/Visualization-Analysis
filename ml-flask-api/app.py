@@ -99,7 +99,7 @@ def get_locations():
         all_messages = db.session.query(Message.location, func.count(Message.id).label('id')).filter( Message.time.between(start_date, end_date)).group_by(Message.location).all()
 
     else:
-        all_messages = Message.query.all()
+        all_messages = db.session.query(Message.location, func.count(Message.id).label('id')).group_by(Message.location).all()
 
     result = messages_schema.dump(all_messages)
 
