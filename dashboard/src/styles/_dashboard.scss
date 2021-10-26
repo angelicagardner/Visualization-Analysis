@@ -13,11 +13,22 @@
 
   .main-container {
     min-height: 60vh;
+    display: flex;
   }
 
   .control {
     width: 30vw;
     float: left;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .word-clouds {
+      svg {
+        height: 50vh;
+      }
+    }
   }
 
   .visualization {

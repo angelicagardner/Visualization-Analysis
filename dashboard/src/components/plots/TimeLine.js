@@ -72,7 +72,7 @@ function TimeLine({callback,timeRange}) {
           frameMargins:0,
         }}
         style={{
-          maxHeight:250,
+          maxHeight:200,
           margin:0,
           padding:0,
         }}
