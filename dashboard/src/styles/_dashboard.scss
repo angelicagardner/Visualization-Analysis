@@ -1,0 +1,63 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: space-between;
+  height: 100%;
+
+  .navigation {
+    h1 {
+      padding: 1rem;
+    }
+  }
+
+  .main-container {
+    min-height: 60vh;
+    display: flex;
+  }
+
+  .control {
+    width: 30vw;
+    float: left;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .word-clouds {
+      svg {
+        height: 50vh;
+      }
+    }
+  }
+
+  .visualization {
+    width: 70vw;
+    height: 100%;
+    float: right;
+    text-align: center;
+
+    svg {
+      align-self: center;
+      height: 100%;
+
+      path {
+        stroke: #0005;
+        stroke-width: 0.75;
+
+        &:hover {
+          fill-opacity: 0.5 !important;
+          cursor: pointer;
+        }
+      }
+
+      text {
+        fill: #fffa;
+        font-size: 0.5rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-style: normal;
+        text-anchor: middle;
+      }
+    }
+  }
+}
