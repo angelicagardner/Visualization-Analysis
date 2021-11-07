@@ -3,7 +3,7 @@ import Plot from 'react-plotly.js';
 import { TimeLineRepository } from '../../repositories/timeline.repository';
 import Moment from 'moment';
 
-function TimeLine({ callback, timeRange }) {
+function TimeLine({ callback, timeRange, location }) {
   const [timeline, setTimeline] = useState([]);
 
   useEffect(() => {

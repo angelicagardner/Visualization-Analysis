@@ -1,5 +1,7 @@
 .map {
-  svg {
+  margin: 50px;
+
+  .canvas {
     align-self: center;
     max-height: 70vh;
     height: 100%;
@@ -34,7 +36,7 @@
   }
 
   .overlay {
-    position: absolute;
+    position: fixed;
     padding: 4rem 3rem;
     display: flex;
     align-items: center;
@@ -42,31 +44,34 @@
     background: rgba(255, 255, 255, 0.8);
     box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.75);
     border-radius: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.125);
 
-    &_arrow {
-      position: fixed;
-      padding: 4rem 3rem;
-      display: flex;
-      align-items: center;
-      color: #2f2f2f;
-      background: rgba(255, 255, 255, 0.8);
-      box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.75);
-      border-radius: 2rem;
+    &::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 20px 20px 0 20px;
+      border-color: rgba(255, 255, 255, 0.8) transparent transparent transparent;
+      bottom: -20px;
+      left: 45%;
+      transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+    }
 
-      &::after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 20px 20px 0 20px;
-        border-color: rgba(255, 255, 255, 0.8) transparent transparent
-          transparent;
-        bottom: -20px;
-        left: 45%;
-        transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
+    .close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      border: none;
+      background: #fff0;
+      cursor: pointer;
+      width: 50px;
+      padding: 5px;
+      margin: 10px;
+
+      &:hover {
+        fill: #7e7e7e;
       }
     }
   }

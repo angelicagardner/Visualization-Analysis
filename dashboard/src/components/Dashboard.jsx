@@ -5,14 +5,19 @@ import WordCloud from './plots/WordCloud';
 import CustomMap from './maps/CustomMap';
 
 function Dashboard() {
+  const [timeRange, setTimeRange] = useState({
+    start: undefined,
+    end: undefined,
+  });
 
-  const [timeRange,setTimeRange] = useState({start:undefined, end:undefined})
-
-
+  const [selectedLocation, setSelectedLocation] = useState({
+    name: undefined,
+    id: undefined,
+  });
 
   const rangeUpdateHandler = (start, end) => {
-    setTimeRange({start,end})
-  }
+    setTimeRange({ start, end });
+  };
 
   return (
     <div className="dashboard">
@@ -28,11 +33,19 @@ function Dashboard() {
           {/* <SunBurst /> */}
         </div>
         <div className="visualization">
-          <CustomMap timeRange={timeRange} />
+          <CustomMap
+            timeRange={timeRange}
+            selected={selectedLocation}
+            updateLocation={setSelectedLocation}
+          />
         </div>
       </div>
       <div className="timeline">
-        <TimeLine callback={rangeUpdateHandler} timeRange={timeRange}  />
+        <TimeLine
+          callback={rangeUpdateHandler}
+          timeRange={timeRange}
+          location={selectedLocation}
+        />
       </div>
     </div>
   );
