@@ -1,6 +1,21 @@
 .map {
+  --dark-color: hsl(var(--hue), 100%, 9%);
+  --light-color: hsl(var(--hue), 95%, 98%);
+  --base: hsl(var(--hue), 95%, 50%);
+  --complimentary1: hsl(var(--hue-complimentary1), 95%, 50%);
+  --complimentary2: hsl(var(--hue-complimentary2), 95%, 50%);
+
+  --font-family: 'Poppins', system-ui;
+
+  --bg-gradient: linear-gradient(
+    to bottom,
+    hsl(var(--hue), 95%, 99%),
+    hsl(var(--hue), 95%, 84%)
+  );
+
   svg {
     align-self: center;
+    max-height: 70vh;
     height: 100%;
 
     path {
@@ -16,6 +31,13 @@
       }
     }
 
+    .active {
+      fill-opacity: 0.8 !important;
+      stroke: #fff5;
+      fill: #fff9 !important;
+      stroke-width: 0.5em;
+    }
+
     text {
       fill: #fffa;
       font-size: 0.35rem;
@@ -23,5 +45,59 @@
       font-weight: 300;
       text-anchor: middle;
     }
+  }
+
+  .overlay {
+    position: absolute;
+    padding: 4rem 3rem;
+    display: flex;
+    align-items: center;
+    color: #2f2f2f;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.75);
+    border-radius: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+
+    &_arrow {
+      position: fixed;
+      padding: 4rem 3rem;
+      display: flex;
+      align-items: center;
+      color: #2f2f2f;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.75);
+      border-radius: 2rem;
+
+      &::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 20px 20px 0 20px;
+        border-color: rgba(255, 255, 255, 0.8) transparent transparent
+          transparent;
+        bottom: -20px;
+        left: 45%;
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+      }
+    }
+  }
+
+  .overlay_inner {
+    max-width: 36rem;
+  }
+
+  .overlay_title {
+    font-size: 1.875rem;
+    line-height: 2.75rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 2rem;
+  }
+
+  .overlay_container {
+    font-weight: 400;
   }
 }
