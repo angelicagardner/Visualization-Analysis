@@ -1,18 +1,4 @@
 .map {
-  --dark-color: hsl(var(--hue), 100%, 9%);
-  --light-color: hsl(var(--hue), 95%, 98%);
-  --base: hsl(var(--hue), 95%, 50%);
-  --complimentary1: hsl(var(--hue-complimentary1), 95%, 50%);
-  --complimentary2: hsl(var(--hue-complimentary2), 95%, 50%);
-
-  --font-family: 'Poppins', system-ui;
-
-  --bg-gradient: linear-gradient(
-    to bottom,
-    hsl(var(--hue), 95%, 99%),
-    hsl(var(--hue), 95%, 84%)
-  );
-
   svg {
     align-self: center;
     max-height: 70vh;
@@ -99,5 +85,17 @@
 
   .overlay_container {
     font-weight: 400;
+  }
+
+  .legend {
+    width: 40vh;
+    margin: auto;
+
+    .range {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+      align-content: center;
+    }
   }
 }
