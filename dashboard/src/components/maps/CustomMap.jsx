@@ -41,8 +41,8 @@ function CustomMap({ timeRange }) {
             ...{
               [cur.location.toLowerCase().replace(' ', '')]: {
                 style: {
-                  fill: `rgb(${(cur.id / max) * 255},0,32)`,
-                  fillOpacity: 0.25,
+                  fill: `hsl(5,${(cur.id / max) * 100}%,60%)`,
+                  fillOpacity: 1,
                 },
                 text: cur.id,
               },
@@ -55,7 +55,6 @@ function CustomMap({ timeRange }) {
 
     loadData(timeRange.start, timeRange.end);
   }, [timeRange]);
-
   return (
     <div className="map">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400">

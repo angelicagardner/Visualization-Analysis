@@ -5,20 +5,22 @@
 
     path {
       stroke: #0005;
-      stroke-width: 0.75;
+      stroke-width: 0.75px;
 
       &:hover {
-        fill-opacity: 0.5 !important;
+        fill-opacity: 1 !important;
+        stroke: #fff5;
+        fill: #fff9 !important;
+        stroke-width: 0.5em;
         cursor: pointer;
       }
     }
 
     text {
       fill: #fffa;
-      font-size: 0.5rem;
+      font-size: 0.35rem;
       font-family: 'Raleway', sans-serif;
-      font-weight: 100;
-      font-style: normal;
+      font-weight: 300;
       text-anchor: middle;
     }
   }
