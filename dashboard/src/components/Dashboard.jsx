@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TimeLine from './plots/TimeLine';
 import WordCloud from './plots/WordCloud';
-// import SunBurst from './plots/SunBurst';
+import SunBurst from './plots/SunBurst';
 import CustomMap from './maps/CustomMap';
 
 function Dashboard() {
@@ -13,6 +13,12 @@ function Dashboard() {
   const [selectedLocation, setSelectedLocation] = useState({
     name: undefined,
     id: undefined,
+  });
+
+  const [selectedFilter, setSelectedFilter] = useState({
+    name: undefined,
+    id: undefined,
+    color: undefined,
   });
 
   const rangeUpdateHandler = (start, end) => {
@@ -30,11 +36,16 @@ function Dashboard() {
             <WordCloud />
             {/* <WordCloud /> */}
           </div>
-          {/* <SunBurst /> */}
+          <SunBurst
+            timeRange={timeRange}
+            location={selectedLocation}
+            updateFilter={setSelectedFilter}
+          />
         </div>
         <div className="visualization">
           <CustomMap
             timeRange={timeRange}
+            filter={selectedFilter}
             selected={selectedLocation}
             updateLocation={setSelectedLocation}
           />
@@ -43,6 +54,7 @@ function Dashboard() {
       <div className="timeline">
         <TimeLine
           callback={rangeUpdateHandler}
+          filter={selectedFilter}
           timeRange={timeRange}
           location={selectedLocation}
         />

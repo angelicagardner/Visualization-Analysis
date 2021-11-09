@@ -1,82 +1,165 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Plot from 'react-plotly.js';
 
-function SunBurst() {
+const mockData = [
+  {
+    id: 1,
+    label: 'Cluster 2',
+    color: 165,
+    keywords: [
+      { keyword: "n't", weight: 1268 },
+      { keyword: 'did', weight: 613 },
+      { keyword: 'like', weight: 568 },
+      { keyword: 'just', weight: 498 },
+      { keyword: 'time', weight: 442 },
+      { keyword: 'good', weight: 424 },
+    ],
+  },
+  {
+    id: 2,
+    label: 'Cluster 1',
+    color: 200,
+    keywords: [
+      { keyword: "n't", weight: 768 },
+      { keyword: 'water', weight: 492 },
+      { keyword: 'do', weight: 484 },
+      { keyword: 'day', weight: 421 },
+      { keyword: 'good', weight: 414 },
+      { keyword: 'make', weight: 399 },
+      { keyword: 'just', weight: 389 },
+    ],
+  },
+  {
+    id: 3,
+    label: 'Cluster 4',
+    color: 45,
+    keywords: [
+      { keyword: 'power', weight: 982 },
+      { keyword: 'nuclear', weight: 752 },
+      { keyword: 'help', weight: 602 },
+      { keyword: 'plant', weight: 507 },
+      { keyword: 'just', weight: 498 },
+      { keyword: 'build', weight: 477 },
+    ],
+  },
+  {
+    id: 4,
+    label: 'Cluster 5',
+    color: 120,
+    keywords: [
+      { keyword: 'work', weight: 719 },
+      { keyword: "n't", weight: 602 },
+      { keyword: 'i', weight: 538 },
+      { keyword: 'do', weight: 493 },
+      { keyword: 'come', weight: 458 },
+      { keyword: 'think', weight: 457 },
+    ],
+  },
+  {
+    id: 5,
+    label: 'Cluster 0',
+    color: 260,
+    keywords: [
+      { keyword: 'rumbl', weight: 708 },
+      { keyword: 'bridg', weight: 620 },
+      { keyword: 'use', weight: 505 },
+      { keyword: 'damag', weight: 498 },
+      { keyword: 'repair', weight: 479 },
+      { keyword: 'hous', weight: 424 },
+      { keyword: 'inspect', weight: 407 },
+    ],
+  },
+  {
+    id: 6,
+    label: 'Cluster 3',
+    color: 334,
+    keywords: [
+      { keyword: "n't", weight: 592 },
+      { keyword: 'say', weight: 519 },
+      { keyword: 'fatal', weight: 465 },
+      { keyword: 'it', weight: 420 },
+      { keyword: 'friend', weight: 411 },
+      { keyword: 'i', weight: 394 },
+    ],
+  },
+];
+
+function SunBurst({ updateFilter }) {
+  const prepare = (data) => ({
+    data: {
+      type: 'sunburst',
+      ids: [
+        ...mockData.map((m) => m.label),
+        ...mockData.reduce(
+          (a, c) => [
+            ...a,
+            ...c.keywords.map((k) => c.label + ' - ' + k.keyword),
+          ],
+          []
+        ),
+      ],
+      labels: [
+        ...mockData.map((m) => m.label),
+        ...mockData.reduce(
+          (a, c) => [...a, ...c.keywords.map((k) => k.keyword)],
+          []
+        ),
+      ],
+      parents: [
+        ...mockData.map((m) => ''),
+        ...mockData.reduce(
+          (a, c) => [...a, ...c.keywords.map((k) => c.label)],
+          []
+        ),
+      ],
+      values: [
+        ...mockData.map((m) => 1),
+        ...mockData.reduce(
+          (a, c) => [...a, ...c.keywords.map((k) => k.weight)],
+          []
+        ),
+      ],
+      sort: false,
+    },
+    colors: mockData.map((m) => m.color),
+  });
+
+  const [clusters, updateClusters] = useState(prepare());
+
+  const clickHandler = (e) => {
+    const { currentPath, label, id } = e.points[0];
+    console.log(currentPath, label, id);
+    if (currentPath === '/') {
+      // Set new filter
+      updateFilter({
+        name: label,
+        id,
+        color: clusters.colors[clusters.data.ids.indexOf(id)],
+      });
+    }
+
+    if (currentPath === undefined) {
+      // Unset the filter
+      updateFilter({
+        name: undefined,
+        id: undefined,
+        color: undefined,
+      });
+    }
+  };
+
   return (
-      <Plot
-        data={[
-          {
-            type: 'sunburst',
-            ids: [
-              'North America',
-              'Europe',
-              'Australia',
-              'North America - Football',
-              'Soccer',
-              'North America - Rugby',
-              'Europe - Football',
-              'Rugby',
-              'Europe - American Football',
-              'Australia - Football',
-              'Association',
-              'Australian Rules',
-              'Autstralia - American Football',
-              'Australia - Rugby',
-              'Rugby League',
-              'Rugby Union',
-            ],
-            labels: [
-              'North<br>America',
-              'Europe',
-              'Australia',
-              'Football',
-              'Soccer',
-              'Rugby',
-              'Football',
-              'Rugby',
-              'American<br>Football',
-              'Football',
-              'Association',
-              'Australian<br>Rules',
-              'American<br>Football',
-              'Rugby',
-              'Rugby<br>League',
-              'Rugby<br>Union',
-            ],
-            parents: [
-              '',
-              '',
-              '',
-              'North America',
-              'North America',
-              'North America',
-              'Europe',
-              'Europe',
-              'Europe',
-              'Australia',
-              'Australia - Football',
-              'Australia - Football',
-              'Australia - Football',
-              'Australia - Football',
-              'Australia - Rugby',
-              'Australia - Rugby',
-            ],
-            outsidetextfont: { size: 20, color: '#377eb8' },
-            // leaf: {opacity: 0.4},
-            marker: { line: { width: 2 } },
-          },
-        ]}
-        config={{
-          responsive: true,
-        }}
-        layout={{
-          autosize: true,
-          margin: { l: 0, r: 0, b: 0, t: 0 },
-          sunburstcolorway: ['#636efa', '#ef553b', '#00cc96'],
-          paper_bgcolor:'transparent'
-        }}
-        style={{}}
-      />
+    <Plot
+      data={[clusters.data]}
+      layout={{
+        autosize: true,
+        responsive: true,
+        margin: { l: 50, r: 50, b: 50, t: 50 },
+        sunburstcolorway: clusters.colors.map((m) => `hsl(${m},100%,60%)`),
+        paper_bgcolor: 'transparent',
+      }}
+      onClick={clickHandler}
+    />
   );
 }
 
