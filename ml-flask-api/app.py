@@ -15,7 +15,7 @@ CORS(app)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-    os.path.join(basedir, 'YInt.sqlite')
+    os.path.join(basedir, 'database', 'YInt.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 v1 = Blueprint('v1', __name__, url_prefix='/api/v1')
@@ -24,48 +24,34 @@ v1 = Blueprint('v1', __name__, url_prefix='/api/v1')
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-nlp = spacy.load('en_core_web_sm')
-# Update spaCy's default stopwords list
-stop_words = ["'s", "m", "u", "o", "s"]
-nlp.Defaults.stop_words.update(stop_words)
-
-
 class Message(db.Model):
-    # Message Class/Model
     id = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100), nullable=False)
     account = db.Column(db.String(100), nullable=False)
-    original_message = db.Column(db.String(100), nullable=False)
-    message = db.Column(db.String(100))
-    hashtag = db.Column(db.String(100))
-    mention = db.Column(db.String(100))
-    is_repost = db.Column(db.Boolean, nullable=False)
-    number_of_reposts = db.Column(db.Integer, nullable=False)
+    message = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, time, location, account, original_message, message, hashtag, mention, is_repost, number_of_reposts):
+    def __init__(self, time, location, account, original_message):
         self.time = time
         self.location = location
         self.account = account
-        self.original_message = original_message
-        self.message = message
-        self.hashtag = hashtag
-        self.mention = mention
-        self.is_repost = is_repost
-        self.number_of_reposts = number_of_reposts
+        self.message = original_message
 
     def __repr__(self):
         return '<Message %r>' % self.id
 
-
 class MessageSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'time', 'location', 'account', 'original_message',
-                  'message', 'hashtag', 'mention', 'is_repost', 'number_of_reposts','numberOfMessages')
-
+        fields = ('id', 'time', 'location', 'account', 'message')
 
 message_schema = MessageSchema()
 messages_schema = MessageSchema(many=True)
+
+# NLP
+nlp = spacy.load('en_core_web_sm')
+# Update spaCy's default stopwords list
+stop_words = ["'s", "m", "u", "o", "s"]
+nlp.Defaults.stop_words.update(stop_words)
 
 
 @v1.route('/messages', methods=['GET'])
@@ -210,4 +196,4 @@ app.register_blueprint(v1)
 
 # Run server
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
