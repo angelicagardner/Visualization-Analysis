@@ -19,6 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 v1 = Blueprint('v1', __name__, url_prefix='/api/v1')
+v2 = Blueprint('v2', __name__, url_prefix='/api/v2')
 
 # Init db
 db = SQLAlchemy(app)
@@ -53,12 +54,14 @@ nlp = spacy.load('en_core_web_sm')
 stop_words = ["'s", "m", "u", "o", "s"]
 nlp.Defaults.stop_words.update(stop_words)
 
-
+"""
+    Endpoint: /messages
+    Get all Messages or all Messages between a specified date range.
+    Returns data in JSON format.
+"""
 @v1.route('/messages', methods=['GET'])
+@v2.route('/messages', methods=['GET'])
 def get_messages():
-    """
-    Get all messages or all messages between a specified date range.
-    """
     start_date = request.args.get('start', default=None, type=str)
     end_date = request.args.get('end', default=None, type=str)
 
@@ -193,6 +196,7 @@ def get_topics():
 
 # Register version
 app.register_blueprint(v1)
+app.register_blueprint(v2)
 
 # Run server
 if __name__ == "__main__":
