@@ -9,6 +9,7 @@
     path {
       stroke: #0005;
       stroke-width: 0.75px;
+      filter: drop-shadow(0 0 0.3rem rgba(254, 254, 254, 0.1));
 
       &:hover {
         fill-opacity: 1 !important;
@@ -16,6 +17,7 @@
         fill: #fff9 !important;
         stroke-width: 0.5em;
         cursor: pointer;
+        filter: drop-shadow(3px 3px 2px rgba(255, 255, 255, 0.7));
       }
     }
 
@@ -27,7 +29,7 @@
     }
 
     text {
-      fill: rgba(50, 50, 50, 0.832);
+      fill: rgba(50, 50, 50, 1);
       font-size: 0.4rem;
       font-family: 'Raleway', sans-serif;
       font-weight: 500;

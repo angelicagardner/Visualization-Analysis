@@ -84,7 +84,7 @@ const mockData = [
   },
 ];
 
-function SunBurst({ updateFilter }) {
+function SunBurst({ filter, updateFilter }) {
   const prepare = (data) => ({
     data: {
       type: 'sunburst',
@@ -128,24 +128,26 @@ function SunBurst({ updateFilter }) {
 
   const clickHandler = (e) => {
     const { currentPath, label, id } = e.points[0];
-    console.log(currentPath, label, id);
-    if (currentPath === '/') {
-      // Set new filter
-      updateFilter({
-        name: label,
-        id,
-        color: clusters.colors[clusters.data.ids.indexOf(id)],
-      });
-    }
 
-    if (currentPath === undefined) {
-      // Unset the filter
-      updateFilter({
-        name: undefined,
-        id: undefined,
-        color: undefined,
-      });
-    }
+    setTimeout(() => {
+      if (currentPath === undefined || id === filter.id) {
+        // Unset the filter
+        updateFilter({
+          name: undefined,
+          id: undefined,
+          color: undefined,
+        });
+      } else {
+        if (currentPath === '/') {
+          // Set new filter
+          updateFilter({
+            name: label,
+            id,
+            color: clusters.colors[clusters.data.ids.indexOf(id)],
+          });
+        }
+      }
+    }, 750);
   };
 
   return (

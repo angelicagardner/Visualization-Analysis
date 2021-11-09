@@ -40,6 +40,7 @@ function Dashboard() {
             timeRange={timeRange}
             location={selectedLocation}
             updateFilter={setSelectedFilter}
+            filter={selectedFilter}
           />
         </div>
         <div className="visualization">

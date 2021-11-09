@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 
 function MapToolTip({ children, visible, title, position, closeCallback }) {
   const tooltipRef = useRef();
-  console.log(visible);
   return (
     <div
       ref={tooltipRef}
