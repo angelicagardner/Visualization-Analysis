@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { LocationRepository } from '../../repositories/location.repository';
 import MapToolTip from './MapToolTip';
 
-function CustomMap({ timeRange, selected, updateLocation }) {
+function CustomMap({ timeRange, selected, updateLocation, filter }) {
   const [mapInfo, setMapInfo] = useState({
     locations: {
       palacehills: { style: { fill: '#fff', fillOpacity: 0.1 }, text: '' },
@@ -55,6 +55,10 @@ function CustomMap({ timeRange, selected, updateLocation }) {
 
       const max = Math.max(...data.map((item) => item.id));
 
+      const getColor = () => {
+        return filter.color ?? 0;
+      };
+
       setMapInfo({
         locations: data.reduce(
           (acc, cur) => ({
@@ -62,7 +66,7 @@ function CustomMap({ timeRange, selected, updateLocation }) {
             ...{
               [cur.location.toLowerCase().replace(' ', '')]: {
                 style: {
-                  fill: `hsl(5,${(cur.id / max) * 100}%,60%)`,
+                  fill: `hsl(${getColor()},${(cur.id / max) * 100}%,60%)`,
                   fillOpacity: 1,
                 },
                 text: cur.id,
@@ -74,18 +78,18 @@ function CustomMap({ timeRange, selected, updateLocation }) {
         legend: {
           start: {
             value: 0,
-            color: `hsl(5,0%,60%)`,
+            color: `hsl(${getColor()},0%,60%)`,
           },
           end: {
             value: max,
-            color: `hsl(5,100%,60%)`,
+            color: `hsl(${getColor()},100%,60%)`,
           },
         },
       });
     };
 
     loadData(timeRange.start, timeRange.end);
-  }, [timeRange]);
+  }, [timeRange, filter]);
 
   const setLocation = (e, title, id, totalMessages) => {
     setTooltip({
