@@ -1,4 +1,6 @@
-# Visualization-Analysis
+# 4DV807 – Project In Visualization and Data Analysis
+
+_by Angelica Hjelm Gardner and Omid Golshan Tafti_
 
 ## Build
 

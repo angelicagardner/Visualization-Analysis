@@ -3,6 +3,7 @@ FROM python:3.8-slim-buster
 WORKDIR /app
 
 COPY ml-flask-api/requirements.txt ./
+
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get autoremove -y \
