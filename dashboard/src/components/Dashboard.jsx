@@ -32,6 +32,10 @@ function Dashboard() {
         <h1>Visual Explorer</h1>
       </div>
       <div className="main-container">
+        <div className="tabs">
+          <button>Overview</button>
+          <button>Messages</button>
+        </div>
         <div className="control">
           <div className="word-clouds">
             <WordCloud />
