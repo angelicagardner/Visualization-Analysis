@@ -115,7 +115,7 @@ function CustomMap({ timeRange, selected, updateLocation, filter }) {
       <svg
         className="canvas"
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 500 385"
+        viewBox="35 0 450 385"
       >
         <path
           className={selected?.id === 'palacehills' ? 'active' : ''}
@@ -445,9 +445,7 @@ function CustomMap({ timeRange, selected, updateLocation, filter }) {
               ${mapInfo.legend.end.color}
             )`,
           }}
-        >
-          |
-        </div>
+        ></div>
       </div>
     </div>
   );

@@ -1,40 +1,79 @@
 .dashboard {
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  justify-content: space-between;
-  height: 100%;
+  position: relative;
+  height: 100vh;
+  width: 100vw;
 
   .navigation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 7vh;
+
     h1 {
-      padding: 1rem;
+      padding: 1vh;
+      font-family: 'Raleway', sans-serif;
     }
   }
 
   .main-container {
-    min-height: 60vh;
-    display: flex;
+    position: absolute;
+    top: 7vh;
+    bottom: 20vh;
+    left: 0;
+    right: 0;
+    box-shadow: inset 0 0rem 2rem 0 rgba(0, 0, 0, 0.75);
   }
 
   .control {
-    width: 30vw;
-    float: left;
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    flex-direction: column;
+    position: absolute;
+    left: 5vw;
+    height: 100%;
 
     .word-clouds {
-      svg {
-        height: 50vh;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 35vw;
+      height: 50%;
+
+      div {
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    .sunburst {
+      position: absolute;
+      width: 35vw;
+      height: 50%;
+      left: 0;
+      bottom: 0;
+
+      div {
+        flex: auto;
+        width: 30vw;
+        max-height: 32vh;
+      }
+
+      .modebar-container {
+        display: none;
       }
     }
   }
 
   .visualization {
-    width: 70vw;
+    position: absolute;
+    left: 40vw;
     height: 100%;
-    float: right;
-    text-align: center;
+  }
+
+  .timeline {
+    background-color: rgba(0, 0, 0, 0.25);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 20vh;
   }
 }

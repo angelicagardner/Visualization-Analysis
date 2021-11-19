@@ -3,6 +3,7 @@ import TimeLine from './plots/TimeLine';
 import WordCloud from './plots/WordCloud';
 import SunBurst from './plots/SunBurst';
 import CustomMap from './maps/CustomMap';
+import RidgeLine from './plots/Ridgeline';
 
 function Dashboard() {
   const [timeRange, setTimeRange] = useState({
@@ -34,14 +35,15 @@ function Dashboard() {
         <div className="control">
           <div className="word-clouds">
             <WordCloud />
-            {/* <WordCloud /> */}
           </div>
-          <SunBurst
-            timeRange={timeRange}
-            location={selectedLocation}
-            updateFilter={setSelectedFilter}
-            filter={selectedFilter}
-          />
+          <div className="sunburst">
+            <SunBurst
+              timeRange={timeRange}
+              location={selectedLocation}
+              updateFilter={setSelectedFilter}
+              filter={selectedFilter}
+            />
+          </div>
         </div>
         <div className="visualization">
           <CustomMap
@@ -50,6 +52,7 @@ function Dashboard() {
             selected={selectedLocation}
             updateLocation={setSelectedLocation}
           />
+          {/* <RidgeLine /> */}
         </div>
       </div>
       <div className="timeline">

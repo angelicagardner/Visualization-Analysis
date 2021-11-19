@@ -1,10 +1,13 @@
 .map {
-  margin: 50px;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 7vh;
 
   .canvas {
     align-self: center;
-    max-height: 70vh;
+    min-width: 60vh;
     height: 100%;
+    margin-right: 50px;
 
     path {
       stroke: #0005;
@@ -103,11 +106,13 @@
       justify-content: space-between;
       flex-direction: row;
       align-content: center;
+      font-size: 1.5vh;
     }
     .gradient {
       border: #2f2f2f 1px solid;
       border-radius: 0.5rem;
       box-shadow: 0 0.1rem 3rem 0 rgba(0, 0, 0, 0.5);
+      height: 1.5vh;
     }
   }
 }
