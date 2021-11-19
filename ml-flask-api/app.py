@@ -1,13 +1,10 @@
 import os
-import spacy
 
 from flask import Flask, Blueprint, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.functions import func
 from flask_marshmallow import Marshmallow
-from gensim.corpora import Dictionary
-from gensim.models import LdaModel
 
 # Init app
 app = Flask(__name__)
@@ -31,20 +28,42 @@ class Message(db.Model):
     location = db.Column(db.String(100), nullable=False)
     account = db.Column(db.String(100), nullable=False)
     message = db.Column(db.String(100), nullable=False)
-    tags = db.relationship('Tag', backref="message", lazy='dynamic')
+    cluster = db.Column(db.Integer, nullable=False)
+    cluster_keyword1 = db.Column(db.String(100), nullable=False)
+    cluster_keyword2 = db.Column(db.String(100), nullable=False)
+    cluster_keyword3 = db.Column(db.String(100), nullable=False)
+    cluster_keyword4 = db.Column(db.String(100), nullable=False)
+    word1 = db.Column(db.String(100))
+    weight1 = db.Column(db.Float)
+    word2 = db.Column(db.String(100))
+    weight2 = db.Column(db.Float)
+    
 
-    def __init__(self, time, location, account, message):
+    def __init__(self, time, location, account, message, 
+                cluster, cluster_keyword1, cluster_keyword2, cluster_keyword3, cluster_keyword4, 
+                word1, weight1, word2, weight2):
         self.time = time
         self.location = location
         self.account = account
         self.message = message
+        self.cluster = cluster
+        self.cluster_keyword1 = cluster_keyword1
+        self.cluster_keyword2 = cluster_keyword2
+        self.cluster_keyword3 = cluster_keyword3
+        self.cluster_keyword4 = cluster_keyword4
+        self.word1 = word1
+        self.weight1 = weight1
+        self.word2 = word2
+        self.weight2 = weight2
 
     def __repr__(self):
         return '<Message %r>' % self.id
 
 class MessageSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'time', 'location', 'account', 'message')
+        fields = ('id', 'time', 'location', 'account', 'message', 
+        'cluster', 'cluster_keyword1', 'cluster_keyword2', 'cluster_keyword3', 'cluster_keyword4', 
+        'word1', 'weight1', 'word2', 'weight2')
 
 message_schema = MessageSchema()
 messages_schema = MessageSchema(many=True)
@@ -91,84 +110,6 @@ def get_messages():
 
     return jsonify(result)
 
-"""
-    Get a Bag-of-Words representation of all messages or all messages between a specified date range.
-"""
-@v1.route('/bow', methods=['GET'])
-def get_bow():
-    start_date = request.args.get('start', default=None, type=str)
-    end_date = request.args.get('end', default=None, type=str)
-    bow = {}
-
-    if start_date and end_date:
-        messages = Message.query.filter(
-            Message.time.between(start_date, end_date),Message.is_repost == False).all()
-    else:
-        messages = Message.query.filter(
-            Message.is_repost == False).all()
-
-    for message in messages:
-        if message.message:
-            words = nlp(message.message)
-            for word in words:
-                if not word.is_stop and not word.is_punct and not word.is_space and not word.is_digit:
-                    if word.text.lower() in bow:
-                        bow[word.text.lower()] += 1
-                    else:
-                        bow[word.text.lower()] = 1
-
-    bow = sorted(bow.items(), key=lambda x: x[1], reverse=True)
-
-    return jsonify(bow)
-
-"""
-    Count words in messages and group them by similar word patterns to infer topics.
-    All messages are used or only messages between a specified date range.
-    If predefined labels for topics are provided, messages will be classified into the most likely topic.
-"""
-@v1.route('/topics', methods=['GET'])
-def get_topics():
-    nlp = spacy.load('en_core_web_sm')
-    # Update spaCy's default stopwords list
-    stop_words = ["'s", "m", "u", "o", "s"]
-    nlp.Defaults.stop_words.update(stop_words)
-
-    params = request.args.to_dict(flat=False)
-    try:
-        num_topics = int(params.get('num_topics')[0])
-    except:
-        num_topics = 10
-    try:
-        start_date = params['start'][0]
-        end_date = params['end'][0]
-    except KeyError:
-        start_date = None
-        end_date = None
-    topics = {}
-
-    if start_date and end_date:
-        messages = Message.query.filter(
-            Message.time.between(start_date, end_date),Message.is_repost == False).all()
-    else:
-        messages = Message.query.filter(Message.is_repost == False).all()
-
-    doc = []
-    for message in messages:
-        if message.message:
-            words = nlp(message.message.lower())
-            text = []
-            for word in words:
-                if not word.is_stop and not word.is_punct and not word.is_space and not word.is_digit:
-                    text.append(word.lemma_)
-            doc.append(text)
-
-    dictionary = Dictionary(doc)
-    corpus = [dictionary.doc2bow(text) for text in doc]
-    lda = LdaModel(corpus=corpus, id2word=dictionary, num_topics=num_topics)
-
-    topics = (lda.print_topics(num_topics=num_topics))
-
-    return jsonify(topics)
 
 @v1.route('/locations', methods=['GET'])
 def get_locations():
