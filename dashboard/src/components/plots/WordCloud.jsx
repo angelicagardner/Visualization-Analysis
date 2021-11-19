@@ -3,6 +3,7 @@ import ReactWordCloud from 'react-wordcloud';
 import 'd3-transition';
 import { select } from 'd3-selection';
 import 'tippy.js/dist/tippy.css';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import words from '../../data/words';
 
@@ -46,11 +47,26 @@ const callbacks = {
   onWordMouseOver: getCallback('onWordMouseOver'),
 };
 
-function WordCloud() {
+function WordCloud({ layout }) {
   return (
-    <div>
-      <ReactWordCloud callbacks={callbacks} options={options} words={words} />
-    </div>
+    <AnimatePresence exitBeforeEnter>
+      {layout.wordCloud.visible ? (
+        <div className="word-clouds" key="cloud">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <ReactWordCloud
+              callbacks={callbacks}
+              options={options}
+              words={words}
+            />
+          </motion.div>
+        </div>
+      ) : null}
+    </AnimatePresence>
   );
 }
 

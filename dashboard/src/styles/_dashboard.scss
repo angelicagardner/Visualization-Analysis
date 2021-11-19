@@ -101,6 +101,22 @@
     margin: auto;
   }
 
+  .details {
+    position: absolute;
+    left: 50vw;
+    top: 0;
+    bottom: 0;
+    max-height: 50vw;
+    margin: auto;
+    background-color: aliceblue;
+    padding: 4rem 3rem;
+    display: flex;
+    align-items: center;
+    color: #2f2f2f;
+    box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.75);
+    border-radius: 2rem;
+  }
+
   .timeline {
     background-color: rgba(0, 0, 0, 0.25);
     position: absolute;
