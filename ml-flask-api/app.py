@@ -16,6 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 v1 = Blueprint('v1', __name__, url_prefix='/api/v1')
+v2 = Blueprint('v2', __name__, url_prefix='/api/v2')
 
 # Init db
 db = SQLAlchemy(app)
@@ -68,32 +69,44 @@ class MessageSchema(ma.Schema):
 message_schema = MessageSchema()
 messages_schema = MessageSchema(many=True)
 
-# Tf-Idf Model
-class Tag(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    word = db.Column(db.String(100), nullable=False)
-    weight = db.Column(db.Float, nullable=False)
-    message_id = db.Column(db.Integer, db.ForeignKey('message.id'), nullable=False)
+@v2.route('/messages', methods=['GET'])
+def get_messages():
+    start_date = request.args.get('start', default=None, type=str)
+    end_date = request.args.get('end', default=None, type=str)
 
-    def __init__(self, word, weight):
-        self.word = word
-        self.weight = weight
+    if start_date and end_date:
+        all_messages = Message.query.filter(
+            Message.time.between(start_date, end_date)
+            ).all()
+    else:
+        all_messages = Message.query.all()
 
-    def __repr__(self):
-        return '<Tag %r>' % self.id
+    result = messages_schema.dump(all_messages)
 
-class TagSchema(ma.Schema):
-    class Meta:
-        fields = ('word', 'weight')
+    for object in result:
+        object['cluster_keywords'] = [object['cluster_keyword1'], object['cluster_keyword2'], 
+                                        object['cluster_keyword3'], object['cluster_keyword4']]
+        del object['cluster_keyword1']
+        del object['cluster_keyword2']
+        del object['cluster_keyword3']
+        del object['cluster_keyword4']
+        if object['word1'] == None and object['word2'] == None:
+            object['words'] = []
 
-tag_schema = TagSchema()
-tags_schema = TagSchema(many=True)
+        elif object['word1'] == None:
+            object['words'] = [{"name": object['word2'], "weight": object['weight2']}]
+        elif object['word2'] == None:
+            object['words'] = [{"name": object['word1'], "weight": object['weight1']}]
+        else:
+            object['words'] = [{"name": object['word1'], "weight": object['weight1']}, 
+                                {"name": object['word2'], "weight": object['weight2']}]
+        del object['word1']
+        del object['weight1']
+        del object['word2']
+        del object['weight2']
 
-"""
-    Endpoint: /messages
-    Get all Messages or all Messages between a specified date range.
-    Returns data in JSON format.
-"""
+    return jsonify(result)
+
 @v1.route('/messages', methods=['GET'])
 def get_messages():
     start_date = request.args.get('start', default=None, type=str)
@@ -113,9 +126,6 @@ def get_messages():
 
 @v1.route('/locations', methods=['GET'])
 def get_locations():
-    """
-    Get all messages or all messages between a specified date range.
-    """
     start_date = request.args.get('start', default=None, type=str)
     end_date = request.args.get('end', default=None, type=str)
 
@@ -131,9 +141,6 @@ def get_locations():
 
 @v1.route('/timeline', methods=['GET'])
 def get_timeline():
-    """
-    Get all messages or all messages between a specified date range.
-    """
     start_date = request.args.get('start', default=None, type=str)
     end_date = request.args.get('end', default=None, type=str)
     time_period  = func.strftime('%Y-%m-%d %H:%M', Message.time)
@@ -151,6 +158,7 @@ def get_timeline():
 
 # Register version
 app.register_blueprint(v1)
+app.register_blueprint(v2)
 
 # Run server
 if __name__ == "__main__":
