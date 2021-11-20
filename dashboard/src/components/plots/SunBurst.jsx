@@ -4,15 +4,13 @@ import Plot from 'react-plotly.js';
 const mockData = [
   {
     id: 1,
-    label: 'Cluster 2',
+    label: 'Cluster 0',
     color: 165,
     keywords: [
-      { keyword: "n't", weight: 1268 },
-      { keyword: 'did', weight: 613 },
-      { keyword: 'like', weight: 568 },
-      { keyword: 'just', weight: 498 },
-      { keyword: 'time', weight: 442 },
-      { keyword: 'good', weight: 424 },
+      { keyword: 'repair', weight: 455 },
+      { keyword: 'failure', weight: 455 },
+      { keyword: 'help', weight: 455 },
+      { keyword: 'damages', weight: 12 },
     ],
   },
   {
@@ -20,72 +18,92 @@ const mockData = [
     label: 'Cluster 1',
     color: 200,
     keywords: [
-      { keyword: "n't", weight: 768 },
-      { keyword: 'water', weight: 492 },
-      { keyword: 'do', weight: 484 },
-      { keyword: 'day', weight: 421 },
-      { keyword: 'good', weight: 414 },
-      { keyword: 'make', weight: 399 },
-      { keyword: 'just', weight: 389 },
+      { keyword: 'nuclear', weight: 768 },
+      { keyword: 'hospital', weight: 492 },
+      { keyword: 'energy', weight: 484 },
+      { keyword: 'there', weight: 421 },
     ],
   },
   {
     id: 3,
-    label: 'Cluster 4',
+    label: 'Cluster 2',
     color: 45,
     keywords: [
-      { keyword: 'power', weight: 982 },
-      { keyword: 'nuclear', weight: 752 },
-      { keyword: 'help', weight: 602 },
-      { keyword: 'plant', weight: 507 },
-      { keyword: 'just', weight: 498 },
-      { keyword: 'build', weight: 477 },
+      { keyword: 'fatalities', weight: 982 },
+      { keyword: 'news', weight: 752 },
+      { keyword: 'days', weight: 602 },
     ],
   },
   {
     id: 4,
-    label: 'Cluster 5',
+    label: 'Cluster 3',
     color: 120,
     keywords: [
-      { keyword: 'work', weight: 719 },
-      { keyword: "n't", weight: 602 },
-      { keyword: 'i', weight: 538 },
-      { keyword: 'do', weight: 493 },
-      { keyword: 'come', weight: 458 },
-      { keyword: 'think', weight: 457 },
+      { keyword: 'food', weight: 719 },
+      { keyword: 'water', weight: 602 },
+      { keyword: 'away', weight: 538 },
+      { keyword: 'bad', weight: 493 },
     ],
   },
   {
     id: 5,
-    label: 'Cluster 0',
+    label: 'Cluster 4',
     color: 260,
     keywords: [
-      { keyword: 'rumbl', weight: 708 },
-      { keyword: 'bridg', weight: 620 },
-      { keyword: 'use', weight: 505 },
-      { keyword: 'damag', weight: 498 },
-      { keyword: 'repair', weight: 479 },
-      { keyword: 'hous', weight: 424 },
-      { keyword: 'inspect', weight: 407 },
+      { keyword: 'rumble', weight: 708 },
+      { keyword: 'water', weight: 620 },
+      { keyword: 'collapsed', weight: 505 },
+      { keyword: 'building', weight: 498 },
     ],
   },
   {
     id: 6,
-    label: 'Cluster 3',
+    label: 'Cluster 5',
     color: 334,
     keywords: [
-      { keyword: "n't", weight: 592 },
-      { keyword: 'say', weight: 519 },
-      { keyword: 'fatal', weight: 465 },
-      { keyword: 'it', weight: 420 },
-      { keyword: 'friend', weight: 411 },
-      { keyword: 'i', weight: 394 },
+      { keyword: 'water', weight: 592 },
+      { keyword: 'run', weight: 519 },
+      { keyword: 'talk', weight: 465 },
+      { keyword: 'stocked', weight: 420 },
+    ],
+  },
+  {
+    id: 29,
+    label: 'Cluster 6',
+    color: 334,
+    keywords: [
+      { keyword: 'closed', weight: 592 },
+      { keyword: 'bridge', weight: 519 },
+      { keyword: 'routes', weight: 465 },
+      { keyword: 'safety', weight: 420 },
+    ],
+  },
+  {
+    id: 112,
+    label: 'Cluster 7',
+    color: 334,
+    keywords: [
+      { keyword: 'nuclear', weight: 592 },
+      { keyword: 'power', weight: 519 },
+      { keyword: 'hss', weight: 465 },
+      { keyword: 'plant', weight: 420 },
+    ],
+  },
+  {
+    id: 75,
+    label: 'Cluster 8',
+    color: 334,
+    keywords: [
+      { keyword: 'service', weight: 592 },
+      { keyword: 'look', weight: 519 },
+      { keyword: 'annoyed', weight: 465 },
+      { keyword: 'years', weight: 420 },
     ],
   },
 ];
 
 function SunBurst({ filter, updateFilter }) {
-  const prepare = (data) => ({
+  const prepare = () => ({
     data: {
       type: 'sunburst',
       ids: [
@@ -154,11 +172,9 @@ function SunBurst({ filter, updateFilter }) {
     <Plot
       data={[clusters.data]}
       layout={{
-        autosize: true,
-        responsive: true,
-        margin: { l: 50, r: 50, b: 50, t: 50 },
         sunburstcolorway: clusters.colors.map((m) => `hsl(${m},100%,60%)`),
         paper_bgcolor: 'transparent',
+        margin: { pad: 0, t: 10, b: 10, r: 0, l: 0 },
       }}
       onClick={clickHandler}
     />
