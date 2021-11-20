@@ -41,13 +41,13 @@ function TimeLine({ callback, timeRange, location }) {
           autobinx: true,
           histnorm: 'count',
           marker: {
-            color: '#FB8072',
+            color: '#FFF',
             line: {
-              color: '#FF5042',
+              color: '#FFF',
               width: 1,
             },
           },
-          opacity: 0.5,
+          opacity: 0.75,
           type: 'histogram',
         },
       ]}
@@ -83,9 +83,9 @@ function TimeLine({ callback, timeRange, location }) {
         },
       }}
       style={{
-        maxHeight: 200,
         margin: 0,
         padding: 0,
+        height: '20vh',
       }}
       onRelayout={updateHandler}
       onDoubleClick={() => callback(undefined, undefined)}
