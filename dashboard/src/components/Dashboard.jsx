@@ -114,7 +114,7 @@ function Dashboard({ messages }) {
           layout={layout}
         />
 
-        <Details layout={layout} data={messages} />
+        <Details layout={layout} data={messages} location={selectedLocation}/>
       </div>
       <div className="timeline">
         <TimeLine

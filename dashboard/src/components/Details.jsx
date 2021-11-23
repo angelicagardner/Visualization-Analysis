@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import MessageTable from './MessageTable';
 import { DataService } from '../services/data-service';
 
-function Details({ layout, data }) {
-  const messages = DataService.getFilteredMessages(data, [
-    { name: 'location', type: 'eq', value: 'downtown' },
-  ]);
+function Details({ layout, data, location }) {
+  const filter = location.name
+    ? [{ name: 'location', type: 'eq', value: location.name }]
+    : [];
+  const messages = DataService.getFilteredMessages(data, filter);
   return (
     <AnimatePresence exitBeforeEnter>
       {layout.details.visible ? (
