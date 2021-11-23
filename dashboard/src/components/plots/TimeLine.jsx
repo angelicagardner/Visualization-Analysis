@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
-import { TimeLineRepository } from '../../repositories/timeline.repository';
+import { DataService } from '../../services/data-service';
 import Moment from 'moment';
 
-function TimeLine({ callback, timeRange, location }) {
+function TimeLine({ callback, timeRange, location, data }) {
   const [timeline, setTimeline] = useState([]);
 
   useEffect(() => {
-    const repository = new TimeLineRepository();
     const loadData = async (start, end) => {
-      let data;
-
-      if (start && end) data = (await repository.getRange(start, end)).data;
-      else data = (await repository.getAll()).data;
+      let result = await DataService.getTimeline(data, []);
 
       setTimeline({
-        x: data.map((item) => item.time),
-        y: data.map((item) => item.numberOfMessages),
+        x: result,
       });
     };
 
     loadData(timeRange.start, timeRange.end);
-  }, [timeRange]);
+  }, [timeRange, data]);
 
   const updateHandler = (e) => {
     if (e['xaxis.range[0]'] && e['xaxis.range[1]'])
@@ -36,7 +31,7 @@ function TimeLine({ callback, timeRange, location }) {
       data={[
         {
           x: timeline.x,
-          y: timeline.y,
+          // y: timeline.y,
           name: 'Messages',
           autobinx: true,
           histnorm: 'count',

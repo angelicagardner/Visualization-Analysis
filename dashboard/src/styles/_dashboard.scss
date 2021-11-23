@@ -63,7 +63,7 @@
       position: absolute;
       left: 0;
       top: 3vh;
-      width: 35vw;
+      width: 30vw;
       height: 50%;
       max-height: 32vh;
 
@@ -75,7 +75,7 @@
 
     .sunburst {
       position: absolute;
-      width: 35vw;
+      width: 30vw;
       height: 50%;
       left: 0;
       bottom: 0;
@@ -94,27 +94,38 @@
 
   .visualization {
     position: absolute;
-    left: 50vw;
+    left: 40vw;
     top: 0;
     bottom: 0;
     max-height: 50vw;
     margin: auto;
+    width: 60%;
   }
 
   .details {
     position: absolute;
-    left: 50vw;
+    left: 40vw;
     top: 0;
     bottom: 0;
     max-height: 50vw;
     margin: auto;
     background-color: aliceblue;
-    padding: 4rem 3rem;
+    padding: 1rem 1rem;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     color: #2f2f2f;
     box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.75);
     border-radius: 2rem;
+    flex-direction: column;
+    width: 58%;
+    align-content: center;
+    justify-content: space-between;
+
+    .ridgeLine {
+      width: 100%;
+      height: 30vh;
+      padding: 2rem;
+    }
   }
 
   .timeline {
