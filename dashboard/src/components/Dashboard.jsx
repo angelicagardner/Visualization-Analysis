@@ -5,7 +5,7 @@ import SunBurst from './plots/SunBurst';
 import CustomMap from './maps/CustomMap';
 import Details from './Details';
 
-function Dashboard() {
+function Dashboard({ messages }) {
   const [timeRange, setTimeRange] = useState({
     start: undefined,
     end: undefined,
@@ -93,18 +93,20 @@ function Dashboard() {
           <button onClick={() => switchTab('MESSAGES')}>Messages</button>
         </div>
         <div className="control">
-          <WordCloud layout={layout} />
+          <WordCloud layout={layout} data={messages} />
           <div className="sunburst" key="sunburst">
             <SunBurst
+              data={messages}
               timeRange={timeRange}
               location={selectedLocation}
-              updateFilter={setSelectedFilter}
               filter={selectedFilter}
+              updateFilter={setSelectedFilter}
             />
           </div>
         </div>
 
         <CustomMap
+          data={messages}
           timeRange={timeRange}
           filter={selectedFilter}
           selected={selectedLocation}
@@ -112,10 +114,11 @@ function Dashboard() {
           layout={layout}
         />
 
-        <Details layout={layout} />
+        <Details layout={layout} data={messages} />
       </div>
       <div className="timeline">
         <TimeLine
+          data={messages}
           callback={rangeUpdateHandler}
           filter={selectedFilter}
           timeRange={timeRange}

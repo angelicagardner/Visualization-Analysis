@@ -1,4 +1,4 @@
-function MessageTable() {
+function MessageTable({ data }) {
   return (
     <div className="messageTable">
       <div className="table-title">
@@ -15,57 +15,21 @@ function MessageTable() {
               <td>Tags</td>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-              <td>4</td>
-              <td>5</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-              <td>4</td>
-              <td>5</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-              <td>4</td>
-              <td>5</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-              <td>4</td>
-              <td>5</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-              <td>4</td>
-              <td>5</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-              <td>4</td>
-              <td>5</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-              <td>4</td>
-              <td>5</td>
-            </tr>
-          </tbody>
+          {data.length ? (
+            <tbody>
+              {data.map((d) => (
+                <tr key={d.id}>
+                  <td>{d.time}</td>
+                  <td>{d.location}</td>
+                  <td>{d.account}</td>
+                  <td>{d.message}</td>
+                  <td>{d.words.map((w) => w.name).join(', ')}</td>
+                </tr>
+              ))}
+            </tbody>
+          ) : (
+            ''
+          )}
         </table>
       </div>
     </div>
