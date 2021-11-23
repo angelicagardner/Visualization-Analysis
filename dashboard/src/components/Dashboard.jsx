@@ -26,7 +26,8 @@ function Dashboard() {
     page: 'OVERVIEW',
     map: {
       bottom: 0,
-      left: '50vw',
+      left: '40vw',
+      width: '60%',
     },
     wordCloud: {
       visible: true,
@@ -48,7 +49,8 @@ function Dashboard() {
           page: 'OVERVIEW',
           map: {
             bottom: 0,
-            left: '50vw',
+            left: '40vw',
+            width: '60%',
           },
           wordCloud: { visible: true },
           details: {
@@ -67,6 +69,7 @@ function Dashboard() {
           map: {
             bottom: '35vh',
             left: '0vw',
+            width: '40%',
           },
           wordCloud: { visible: false },
           details: {
