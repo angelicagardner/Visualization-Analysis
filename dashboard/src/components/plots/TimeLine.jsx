@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
-import { TimeLineRepository } from '../../repositories/timeline.repository';
+import { DataService } from '../../services/data-service';
 import Moment from 'moment';
 
-function TimeLine({ callback, timeRange, location }) {
+function TimeLine({ callback, timeRange, location, data }) {
   const [timeline, setTimeline] = useState([]);
 
   useEffect(() => {
-    const repository = new TimeLineRepository();
     const loadData = async (start, end) => {
-      let data;
-
-      if (start && end) data = (await repository.getRange(start, end)).data;
-      else data = (await repository.getAll()).data;
+      let result = await DataService.getTimeline(data, []);
 
       setTimeline({
-        x: data.map((item) => item.time),
-        y: data.map((item) => item.numberOfMessages),
+        x: result,
       });
     };
 
     loadData(timeRange.start, timeRange.end);
-  }, [timeRange]);
+  }, [timeRange, data]);
 
   const updateHandler = (e) => {
     if (e['xaxis.range[0]'] && e['xaxis.range[1]'])
@@ -36,18 +31,18 @@ function TimeLine({ callback, timeRange, location }) {
       data={[
         {
           x: timeline.x,
-          y: timeline.y,
+          // y: timeline.y,
           name: 'Messages',
           autobinx: true,
           histnorm: 'count',
           marker: {
-            color: '#FB8072',
+            color: '#FFF',
             line: {
-              color: '#FF5042',
+              color: '#FFF',
               width: 1,
             },
           },
-          opacity: 0.5,
+          opacity: 0.75,
           type: 'histogram',
         },
       ]}
@@ -83,9 +78,9 @@ function TimeLine({ callback, timeRange, location }) {
         },
       }}
       style={{
-        maxHeight: 200,
         margin: 0,
         padding: 0,
+        height: '20vh',
       }}
       onRelayout={updateHandler}
       onDoubleClick={() => callback(undefined, undefined)}

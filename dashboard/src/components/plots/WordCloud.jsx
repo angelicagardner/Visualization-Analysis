@@ -1,10 +1,10 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+import { DataService } from '../../services/data-service';
 import ReactWordCloud from 'react-wordcloud';
 import 'd3-transition';
 import { select } from 'd3-selection';
 import 'tippy.js/dist/tippy.css';
-
-import words from '../../data/words';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const options = {
   enableTooltip: true,
@@ -46,11 +46,37 @@ const callbacks = {
   onWordMouseOver: getCallback('onWordMouseOver'),
 };
 
-function WordCloud() {
+function WordCloud({ layout, data }) {
+  const [words, setWords] = useState([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      let result = await DataService.getKeywords(data, []);
+      setWords([...result]);
+    };
+
+    loadData();
+  }, [data]);
+
   return (
-    <div>
-      <ReactWordCloud callbacks={callbacks} options={options} words={words} />
-    </div>
+    <AnimatePresence exitBeforeEnter>
+      {layout.wordCloud.visible ? (
+        <div className="word-clouds" key="cloud">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <ReactWordCloud
+              callbacks={callbacks}
+              options={options}
+              words={words}
+            />
+          </motion.div>
+        </div>
+      ) : null}
+    </AnimatePresence>
   );
 }
 
