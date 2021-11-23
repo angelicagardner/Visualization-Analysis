@@ -56,7 +56,6 @@ function CustomMap({
   useEffect(() => {
     const loadData = async (start, end) => {
       let result = await DataService.getLocations(data, []);
-      console.log(result);
       const max = Math.max(...result.map((item) => item.value));
 
       const getColor = () => {
@@ -106,7 +105,7 @@ function CustomMap({
       });
     updateLocation({ name: title, id });
   };
-  console.log(mapInfo);
+
   return (
     <motion.div
       className="visualization"

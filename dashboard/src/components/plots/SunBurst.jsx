@@ -38,7 +38,6 @@ function SunBurst({ filter, updateFilter, data, timeRange, location }) {
   useEffect(() => {
     const loadData = async () => {
       let result = await DataService.getCluster(data, []);
-      console.log('dsdsds');
       updateDimensions({ ...result });
     };
 
