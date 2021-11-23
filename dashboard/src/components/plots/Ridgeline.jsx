@@ -11,6 +11,7 @@ function RidgeLine({ data }) {
     y0: i,
     x: keywords[i],
     orientation: 'h',
+    showlegend: false,
   }));
 
   return (
