@@ -83,18 +83,26 @@ def load_data_into_DB(db, file_name):
             cluster = clusters[index]
             tags = sorted(mgp.cluster_word_distribution[cluster].items(), key=lambda k: k[1], reverse=True)[:4]
             tag1 = ''
+            count1 = 0
             tag2 = ''
+            count2 = 0
             tag3 = ''
+            count3 = 0
             tag4 = ''
+            count4 = 0
             for i, tag in enumerate(tags):
                 if i == 0:
                     tag1 = tag[0]
+                    count1 = tag[1]
                 elif i == 1:
                     tag2 = tag[0]
+                    count2 = tag[1]
                 elif i == 2:
                     tag3 = tag[0]
+                    count3 = tag[1]
                 elif i == 3:
                     tag4 = tag[0]
+                    count4 = tag[1]
             words = remove_stopwords(str(message).replace('.', '').replace('!', '').replace('?', '').replace('-', '') \
                 .replace(':', '').replace(',', '').replace('#', '') \
                 .replace("('", '').replace("')", '').replace('("', '') .replace('")', '')).split(' ')
@@ -111,7 +119,7 @@ def load_data_into_DB(db, file_name):
                         word2 = word
                         weight2 = tfidf_matrix[word][0]
             message = Message(time, location, account, message, str(cluster), 
-                            tag1, tag2, tag3, tag4, 
+                            tag1, count1, tag2, count2, tag3, count3, tag4, count4,
                             word1, weight1, word2, weight2)
             db.session.add(message)
             db.session.commit()
