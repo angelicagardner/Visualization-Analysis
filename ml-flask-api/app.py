@@ -1,8 +1,9 @@
 import os
 
-from flask import Flask, Blueprint, request, jsonify
+from flask import Flask, Blueprint, request, jsonify, Response
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from numpy import int0
 from sqlalchemy.sql.functions import func
 from flask_marshmallow import Marshmallow
 
@@ -29,7 +30,7 @@ class Message(db.Model):
     location = db.Column(db.String(100), nullable=False)
     account = db.Column(db.String(100), nullable=False)
     message = db.Column(db.String(100), nullable=False)
-    cluster = db.Column(db.Integer, nullable=False)
+    cluster = db.Column(db.String(100), nullable=False)
     cluster_keyword1 = db.Column(db.String(100), nullable=False)
     cluster_keyword2 = db.Column(db.String(100), nullable=False)
     cluster_keyword3 = db.Column(db.String(100), nullable=False)
@@ -122,6 +123,29 @@ def get_messages():
     result = messages_schema.dump(all_messages)
 
     return jsonify(result)
+
+@v2.route('/topics', methods=['POST'])
+def update_topic_names():
+    cluster_id = request.args.get('cluster_id', default=None, type=str)
+    cluster_name = request.args.get('cluster_name', default=None, type=str)
+
+    if cluster_id == None:
+        return jsonify({"message": "Information about the cluster is missing"}), 400
+    
+    # Check if cluster_name is already taken by another cluster
+    exists = Message.query.filter_by(cluster=cluster_name).first()
+    if exists != None:
+        return jsonify({"message": "Cluster name already taken"}), 400
+    
+    if cluster_name != None:
+        try:
+            Message.query.filter(Message.cluster == cluster_id).update(dict(cluster=cluster_name))
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            return Response('', status=201, mimetype='application/json')
+    
+    return Response('', status=201, mimetype='application/json')
 
 
 @v1.route('/locations', methods=['GET'])

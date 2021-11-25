@@ -43,6 +43,7 @@ def get_tfidf_weights(messages):
  
 
 """
+Creates the database and loads the data into it after performing TF-IDF and Topic Modeling.
 """
 def load_data_into_DB(db, file_name):
     db.create_all()
@@ -109,7 +110,7 @@ def load_data_into_DB(db, file_name):
                     elif tfidf_matrix[word][0] > 0.07 and word2 == None and word != word1:
                         word2 = word
                         weight2 = tfidf_matrix[word][0]
-            message = Message(time, location, account, message, cluster, 
+            message = Message(time, location, account, message, str(cluster), 
                             tag1, tag2, tag3, tag4, 
                             word1, weight1, word2, weight2)
             db.session.add(message)
