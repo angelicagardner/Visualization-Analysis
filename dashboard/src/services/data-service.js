@@ -34,7 +34,7 @@ export class DataService {
       ids.push(key);
       labels.push('C' + key);
       parents.push('');
-      values.push(1);
+      values.push(Object.keys(temp[key]).reduce((a, c) => a + temp[key][c], 0));
 
       for (const word in temp[key]) {
         ids.push(`${key} - ${word}`);
