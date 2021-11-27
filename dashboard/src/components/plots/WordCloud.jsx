@@ -50,12 +50,7 @@ function WordCloud({ layout, data }) {
   const [words, setWords] = useState([]);
 
   useEffect(() => {
-    const loadData = async () => {
-      let result = await DataService.getKeywords(data, []);
-      setWords([...result]);
-    };
-
-    loadData();
+    setWords(data);
   }, [data]);
 
   return (
