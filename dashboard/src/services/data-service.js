@@ -18,7 +18,9 @@ export class DataService {
     const clusters = groupBy('cluster')(dataset);
     const temp = Object.keys(clusters).map((c) =>
       clusters[c].reduce((obj, e) => {
-        e.cluster_keywords.forEach((w) => (obj[w] = (obj[w] || 0) + 1));
+        e.cluster_keywords.forEach(
+          (w) => (obj[w.name] = (obj[w.name] || 0) + w.count)
+        );
         return obj;
       }, {})
     );
