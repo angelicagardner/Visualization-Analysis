@@ -50,6 +50,9 @@ function SunBurst({ filter, updateFilter, data, timeRange, location }) {
         {
           type: 'sunburst',
           ...dimensions,
+          marker: { line: { width: 2 } },
+          branchvalues: 'total',
+          insidetextorientation: 'radial',
         },
       ]}
       layout={{
