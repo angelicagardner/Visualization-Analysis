@@ -84,6 +84,20 @@ class Dashboard extends Component {
     });
   }
 
+  async updateLocationHandler(name, id) {
+    const newFilters = {
+      ...this.state.filters,
+      location: { name, id },
+    };
+    this.setState({
+      filters: newFilters,
+      data: {
+        ...this.state.data,
+        wordCloud: await this.service.getKeywords(newFilters),
+      },
+    });
+  }
+
   switchTab(name) {
     // switch (name) {
     //   case 'OVERVIEW':
@@ -154,6 +168,7 @@ class Dashboard extends Component {
             data={this.state.data.map}
             selected={this.state.filters.location}
             layout={this.state.layout}
+            update={(name, id) => this.updateLocationHandler(name, id)}
           />
           {/* 
           <Details

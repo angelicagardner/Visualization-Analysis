@@ -29,9 +29,25 @@ export class DataService {
   async getKeywords(filters) {
     let data = this.messages.all;
 
-    if (filters?.cluster?.id !== undefined) {
+    if (
+      filters?.cluster?.id !== undefined &&
+      filters?.location?.name !== undefined
+    ) {
+      data = this.messages.byCluster[filters.cluster.id].filter(
+        (m) => m.location === filters.location.name
+      );
+    } else if (filters?.cluster?.id !== undefined) {
       data = this.messages.byCluster[filters.cluster.id];
-    } else if (this.overall.keywords) return this.overall.keywords;
+    } else if (filters?.location?.name !== undefined) {
+      data = this.messages.byLocation[filters.location.name];
+    }
+
+    if (
+      this.overall.keywords &&
+      filters?.cluster?.id === undefined &&
+      filters?.location?.name === undefined
+    )
+      return this.overall.keywords;
 
     const keywords = data
       .reduce((a, c) => [...a, ...c.words], [])
