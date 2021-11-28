@@ -33,6 +33,7 @@ class Dashboard extends Component {
         wordCloud: [],
         sunburst: [],
         map: [],
+        timeline: [],
       },
       layout: {
         page: 'OVERVIEW',
@@ -60,13 +61,25 @@ class Dashboard extends Component {
           wordCloud: await this.service.getKeywords([]),
           sunburst: await this.service.getCluster([]),
           map: await this.service.getLocations([]),
+          timeline: await this.service.getTimeline([]),
         },
       });
     });
   }
 
-  rangeUpdateHandler(start, end) {
-    // setTimeRange({ start, end });
+  async rangeUpdateHandler(start, end) {
+    const newFilters = {
+      ...this.state.filters,
+      timeRange: { start, end },
+    };
+    this.setState({
+      filters: newFilters,
+      data: {
+        ...this.state.data,
+        map: await this.service.getLocations(newFilters),
+        wordCloud: await this.service.getKeywords(newFilters),
+      },
+    });
   }
 
   async updateClusterHandler(name, id) {
@@ -80,6 +93,7 @@ class Dashboard extends Component {
         ...this.state.data,
         map: await this.service.getLocations(newFilters),
         wordCloud: await this.service.getKeywords(newFilters),
+        timeline: await this.service.getTimeline(newFilters),
       },
     });
   }
@@ -94,6 +108,7 @@ class Dashboard extends Component {
       data: {
         ...this.state.data,
         wordCloud: await this.service.getKeywords(newFilters),
+        timeline: await this.service.getTimeline(newFilters),
       },
     });
   }
@@ -178,11 +193,12 @@ class Dashboard extends Component {
           /> */}
         </div>
         <div className="timeline">
-          {/* <TimeLine
-            data={this.state.messages}
-            callback={this.rangeUpdateHandler}
-            timeRange={this.state.timeRange}
-          /> */}
+          <TimeLine
+            data={this.state.data.timeline}
+            update={(start, end) => this.rangeUpdateHandler(start, end)}
+            cluster={this.state.filters.cluster}
+            location={this.state.filters.location}
+          />
         </div>
       </div>
     );

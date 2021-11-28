@@ -9,6 +9,7 @@ export class DataService {
     location: null,
     clusters: null,
     keywords: null,
+    timeline: null,
   };
 
   static getInstance() {
@@ -22,8 +23,33 @@ export class DataService {
     this.messages.byLocation = groupBy('location')(messages);
   }
 
-  async getTimeline(dataset, filters) {
-    return dataset.map((d) => d.time);
+  async getTimeline(filters) {
+    if (!this.overall.timeline)
+      this.overall.timeline = this.messages.all.map((d) => d.time);
+
+    const result = { main: this.overall.timeline };
+
+    if (
+      filters?.cluster?.id !== undefined &&
+      filters?.location?.name !== undefined
+    ) {
+      result['full'] = this.messages.byCluster[filters.cluster.id]
+        .filter((m) => m.location === filters.location.name)
+        .map((d) => d.time);
+    }
+
+    if (filters?.cluster?.id !== undefined) {
+      result['cluster'] = this.messages.byCluster[filters.cluster.id].map(
+        (d) => d.time
+      );
+    }
+    if (filters?.location?.name !== undefined) {
+      result['location'] = this.messages.byLocation[filters.location.name].map(
+        (d) => d.time
+      );
+    }
+
+    return result;
   }
 
   async getKeywords(filters) {
@@ -42,10 +68,19 @@ export class DataService {
       data = this.messages.byLocation[filters.location.name];
     }
 
+    if (filters?.timeRange?.start && filters?.timeRange?.end) {
+      data = data.filter(
+        (d) =>
+          d.time >= filters.timeRange.start && d.time <= filters.timeRange.end
+      );
+    }
+
     if (
       this.overall.keywords &&
       filters?.cluster?.id === undefined &&
-      filters?.location?.name === undefined
+      filters?.location?.name === undefined &&
+      filters?.timeRange?.start === undefined &&
+      filters?.timeRange?.end === undefined
     )
       return this.overall.keywords;
 
@@ -106,15 +141,26 @@ export class DataService {
   }
 
   async getLocations(filters) {
-    let data = this.messages.byLocation;
+    let data = null;
 
     if (filters?.cluster?.id !== undefined) {
-      data = groupBy('location')(this.messages.byCluster[filters.cluster.id]);
-    } else if (this.overall.location) return this.overall.location;
+      data = this.messages.byCluster[filters.cluster.id];
+    }
 
-    const result = Object.keys(data).map((k) => ({
+    if (filters?.timeRange?.start && filters?.timeRange?.end) {
+      data = data.filter(
+        (d) =>
+          d.time >= filters.timeRange.start && d.time <= filters.timeRange.end
+      );
+    }
+
+    if (this.overall.location && this.messages.byLocation === data)
+      return this.overall.location;
+
+    const grouped = data ? groupBy('location')(data) : this.messages.byLocation;
+    const result = Object.keys(grouped).map((k) => ({
       location: k,
-      value: data[k].length,
+      value: grouped[k].length,
     }));
 
     if (!this.overall.location && this.messages.byLocation === data)
