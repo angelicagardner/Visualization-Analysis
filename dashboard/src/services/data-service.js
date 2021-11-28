@@ -1,23 +1,59 @@
 export class DataService {
-  static async getTimeline(dataset, filters) {
+  static instance = null;
+  messages = {
+    all: [],
+    byCluster: {},
+    byLocation: {},
+  };
+  overall = {
+    location: null,
+    clusters: null,
+    keywords: null,
+  };
+
+  static getInstance() {
+    if (!this.instance) this.instance = new DataService();
+    return this.instance;
+  }
+
+  setMessages(messages) {
+    this.messages.all = messages;
+    this.messages.byCluster = groupBy('cluster')(messages);
+    this.messages.byLocation = groupBy('location')(messages);
+  }
+
+  async getTimeline(dataset, filters) {
     return dataset.map((d) => d.time);
   }
 
-  static async getKeywords(dataset, filters) {
-    const keywords = dataset
+  async getKeywords(filters) {
+    let data = this.messages.all;
+
+    if (filters?.cluster?.id !== undefined) {
+      data = this.messages.byCluster[filters.cluster.id];
+    } else if (this.overall.keywords) return this.overall.keywords;
+
+    const keywords = data
       .reduce((a, c) => [...a, ...c.words], [])
       .reduce((obj, e) => {
         obj[e.name] = (obj[e.name] || 0) + 1;
         return obj;
       }, {});
 
-    return Object.keys(keywords).map((k) => ({ text: k, value: keywords[k] }));
+    const result = Object.keys(keywords).map((k) => ({
+      text: k,
+      value: keywords[k],
+    }));
+
+    if (!this.overall.keywords && this.messages.all.length === data.length)
+      this.overall.keywords = result;
+
+    return result;
   }
 
-  static async getCluster(dataset, filters) {
-    const clusters = groupBy('cluster')(dataset);
-    const temp = Object.keys(clusters).map((c) =>
-      clusters[c].reduce((obj, e) => {
+  async getCluster(filters) {
+    const temp = Object.keys(this.messages.byCluster).map((c) =>
+      this.messages.byCluster[c].reduce((obj, e) => {
         e.cluster_keywords.forEach(
           (w) => (obj[w.name] = (obj[w.name] || 0) + w.count)
         );
@@ -53,16 +89,25 @@ export class DataService {
     };
   }
 
-  static async getLocations(dataset, filters) {
-    const locations = groupBy('location')(dataset);
+  async getLocations(filters) {
+    let data = this.messages.byLocation;
 
-    return Object.keys(locations).map((k) => ({
+    if (filters?.cluster?.id !== undefined) {
+      data = groupBy('location')(this.messages.byCluster[filters.cluster.id]);
+    } else if (this.overall.location) return this.overall.location;
+
+    const result = Object.keys(data).map((k) => ({
       location: k,
-      value: locations[k].length,
+      value: data[k].length,
     }));
+
+    if (!this.overall.location && this.messages.byLocation === data)
+      this.overall.location = result;
+
+    return result;
   }
 
-  static getFilteredMessages(dataset, filters) {
+  getFilteredMessages(dataset, filters) {
     let filtered = [...dataset];
 
     for (const filter of filters) {
@@ -79,7 +124,7 @@ export class DataService {
     return filtered;
   }
 
-  static getKeywordWeights(messages) {
+  getKeywordWeights(messages) {
     return messages.reduce((obj, e) => {
       e.words.forEach((w) => (obj[w.name] = [...(obj[w.name] ?? []), e.time]));
       return obj;

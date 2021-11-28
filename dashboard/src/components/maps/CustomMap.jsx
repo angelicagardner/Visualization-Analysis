@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { DataService } from '../../services/data-service';
 import MapToolTip from './MapToolTip';
 import { motion } from 'framer-motion';
 
@@ -54,16 +53,15 @@ function CustomMap({
   });
 
   useEffect(() => {
-    const loadData = async (start, end) => {
-      let result = await DataService.getLocations(data, []);
-      const max = Math.max(...result.map((item) => item.value));
+    const loadData = async () => {
+      const max = Math.max(...data.map((item) => item.value));
 
       const getColor = () => {
-        return filter.color ?? 0;
+        return filter?.color ?? 0;
       };
 
       setMapInfo({
-        locations: result.reduce(
+        locations: data.reduce(
           (acc, cur) => ({
             ...acc,
             ...{
@@ -91,8 +89,8 @@ function CustomMap({
       });
     };
 
-    loadData(timeRange.start, timeRange.end);
-  }, [timeRange, filter, data]);
+    loadData();
+  }, [data]);
 
   const setLocation = (e, title, id, totalMessages) => {
     if (layout.page === 'OVERVIEW')

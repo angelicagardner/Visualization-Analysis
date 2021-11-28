@@ -11,6 +11,7 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.repository = new MessageRepository();
+    this.service = DataService.getInstance();
 
     this.state = {
       messages: [],
@@ -52,12 +53,13 @@ class Dashboard extends Component {
 
   componentDidMount() {
     this.repository.getAll().then(async (res) => {
+      this.service.setMessages(res.data);
       this.setState({
         messages: res.data,
         data: {
-          wordCloud: await DataService.getKeywords(res.data, []),
-          sunburst: await DataService.getCluster(res.data, []),
-          map: await DataService.getLocations(res.data, []),
+          wordCloud: await this.service.getKeywords([]),
+          sunburst: await this.service.getCluster([]),
+          map: await this.service.getLocations([]),
         },
       });
     });
@@ -67,9 +69,18 @@ class Dashboard extends Component {
     // setTimeRange({ start, end });
   }
 
-  updateClusterHandler(name, id) {
+  async updateClusterHandler(name, id) {
+    const newFilters = {
+      ...this.state.filters,
+      cluster: { name, id },
+    };
     this.setState({
-      filters: { ...this.state.filters, cluster: { name, id } },
+      filters: newFilters,
+      data: {
+        ...this.state.data,
+        map: await this.service.getLocations(newFilters),
+        wordCloud: await this.service.getKeywords(newFilters),
+      },
     });
   }
 
@@ -139,13 +150,12 @@ class Dashboard extends Component {
             </div>
           </div>
 
-          {/* <CustomMap
-            data={this.state.messages}
-            timeRange={this.state.timeRange}
-            selected={this.state.selectedLocation}
+          <CustomMap
+            data={this.state.data.map}
+            selected={this.state.filters.location}
             layout={this.state.layout}
           />
-
+          {/* 
           <Details
             layout={this.state.layout}
             data={this.state.messages}

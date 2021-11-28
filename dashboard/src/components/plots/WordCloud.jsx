@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { DataService } from '../../services/data-service';
 import ReactWordCloud from 'react-wordcloud';
 import 'd3-transition';
 import { select } from 'd3-selection';
