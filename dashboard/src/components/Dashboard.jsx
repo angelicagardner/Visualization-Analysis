@@ -6,6 +6,7 @@ import WordCloud from './plots/WordCloud';
 import SunBurst from './plots/SunBurst';
 import CustomMap from './maps/CustomMap';
 import Details from './Details';
+import MessageMeter from './MessageMeter';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -164,6 +165,11 @@ class Dashboard extends Component {
       <div className="dashboard">
         <div className="navigation">
           <h1>Visual Explorer</h1>
+          <MessageMeter
+            data={DataService.getMessageMeterData(
+              this.state.data.filtered.length
+            )}
+          />
         </div>
         <div className="main-container">
           <div className="tabs">
