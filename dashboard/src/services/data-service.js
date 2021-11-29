@@ -12,10 +12,10 @@ export class DataService {
     timeline: null,
   };
   static meterTips = [
-    'Result will be instantly computed',
+    'Results will be instantly computed',
     'Reasonable computing time',
-    'You might experience a very small delay',
-    'It takes time to compute ne patient',
+    'You may experience a very small delay',
+    'It takes time to compute be patient',
   ];
   static meterColorClass = ['blue', 'green', 'orange', 'red'];
 
