@@ -70,7 +70,7 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
   if (data?.full) {
     plotData.push({
       x: data.full,
-      name: `${location.name} & ${location.cluster}`,
+      name: `${location.name} & ${cluster.name}`,
       histnorm: 'count',
       marker: {
         color: '#37D',
