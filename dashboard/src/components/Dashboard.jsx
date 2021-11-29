@@ -34,6 +34,7 @@ class Dashboard extends Component {
         sunburst: [],
         map: [],
         timeline: [],
+        filtered: [],
       },
       layout: {
         page: 'OVERVIEW',
@@ -58,10 +59,11 @@ class Dashboard extends Component {
       this.setState({
         messages: res.data,
         data: {
-          wordCloud: await this.service.getKeywords([]),
-          sunburst: await this.service.getCluster([]),
-          map: await this.service.getLocations([]),
-          timeline: await this.service.getTimeline([]),
+          wordCloud: await this.service.getKeywords({}),
+          sunburst: await this.service.getCluster({}),
+          map: await this.service.getLocations({}),
+          timeline: await this.service.getTimeline({}),
+          filtered: await this.service.getFilteredMessages({}),
         },
       });
     });
@@ -78,6 +80,7 @@ class Dashboard extends Component {
         ...this.state.data,
         map: await this.service.getLocations(newFilters),
         wordCloud: await this.service.getKeywords(newFilters),
+        filtered: await this.service.getFilteredMessages(newFilters),
       },
     });
   }
@@ -94,6 +97,7 @@ class Dashboard extends Component {
         map: await this.service.getLocations(newFilters),
         wordCloud: await this.service.getKeywords(newFilters),
         timeline: await this.service.getTimeline(newFilters),
+        filtered: await this.service.getFilteredMessages(newFilters),
       },
     });
   }
@@ -109,49 +113,50 @@ class Dashboard extends Component {
         ...this.state.data,
         wordCloud: await this.service.getKeywords(newFilters),
         timeline: await this.service.getTimeline(newFilters),
+        filtered: await this.service.getFilteredMessages(newFilters),
       },
     });
   }
 
   switchTab(name) {
-    // switch (name) {
-    //   case 'OVERVIEW':
-    //     setLayout({
-    //       ...layout,
-    //       page: 'OVERVIEW',
-    //       map: {
-    //         bottom: 0,
-    //         left: '40vw',
-    //         width: '60%',
-    //       },
-    //       wordCloud: { visible: true },
-    //       details: {
-    //         visible: false,
-    //       },
-    //     });
-    //     setSelectedLocation({
-    //       start: undefined,
-    //       end: undefined,
-    //     });
-    //     break;
-    //   case 'MESSAGES':
-    //     setLayout({
-    //       ...layout,
-    //       page: 'MESSAGES',
-    //       map: {
-    //         bottom: '35vh',
-    //         left: '0vw',
-    //         width: '40%',
-    //       },
-    //       wordCloud: { visible: false },
-    //       details: {
-    //         visible: true,
-    //       },
-    //     });
-    //     break;
-    //   default:
-    //     console.log('Invalid tab name');
-    // }
+    switch (name) {
+      case 'OVERVIEW':
+        this.setState({
+          layout: {
+            ...this.state.layout,
+            page: 'OVERVIEW',
+            map: {
+              bottom: 0,
+              left: '40vw',
+              width: '60%',
+            },
+            wordCloud: { visible: true },
+            details: {
+              visible: false,
+            },
+          },
+        });
+        break;
+      case 'MESSAGES':
+        this.setState({
+          layout: {
+            ...this.state.layout,
+            page: 'MESSAGES',
+            map: {
+              bottom: '35vh',
+              left: '0vw',
+              width: '40%',
+            },
+            wordCloud: { visible: false },
+            details: {
+              visible: true,
+            },
+          },
+        });
+        break;
+      default:
+        console.log('Invalid tab name');
+    }
   }
 
   render() {
@@ -185,12 +190,12 @@ class Dashboard extends Component {
             layout={this.state.layout}
             update={(name, id) => this.updateLocationHandler(name, id)}
           />
-          {/* 
+
           <Details
             layout={this.state.layout}
-            data={this.state.messages}
+            data={this.state.data.filtered}
             location={this.state.selectedLocation}
-          /> */}
+          />
         </div>
         <div className="timeline">
           <TimeLine

@@ -141,7 +141,7 @@ export class DataService {
   }
 
   async getLocations(filters) {
-    let data = null;
+    let data = this.messages.all;
 
     if (filters?.cluster?.id !== undefined) {
       data = this.messages.byCluster[filters.cluster.id];
@@ -169,24 +169,33 @@ export class DataService {
     return result;
   }
 
-  getFilteredMessages(dataset, filters) {
-    let filtered = [...dataset];
+  getFilteredMessages(filters) {
+    let data = this.messages.all;
 
-    for (const filter of filters) {
-      filtered = filtered.filter((m) => {
-        if (filter.type === 'eq' && typeof m[filter.name] === 'string')
-          return m[filter.name].toLowerCase() === filter.value.toLowerCase();
-        if (filter.type === 'eq') return m[filter.name] === filter.value;
-        if (filter.type === 'lte') return m[filter.name] <= filter.value;
-        if (filter.type === 'gte') return m[filter.name] >= filter.value;
-        return true;
-      });
+    if (
+      filters?.cluster?.id !== undefined &&
+      filters?.location?.name !== undefined
+    ) {
+      data = this.messages.byCluster[filters.cluster.id].filter(
+        (m) => m.location === filters.location.name
+      );
+    } else if (filters?.cluster?.id !== undefined) {
+      data = this.messages.byCluster[filters.cluster.id];
+    } else if (filters?.location?.name !== undefined) {
+      data = this.messages.byLocation[filters.location.name];
     }
 
-    return filtered;
+    if (filters?.timeRange?.start && filters?.timeRange?.end) {
+      data = data.filter(
+        (d) =>
+          d.time >= filters.timeRange.start && d.time <= filters.timeRange.end
+      );
+    }
+
+    return data;
   }
 
-  getKeywordWeights(messages) {
+  static getKeywordWeights(messages) {
     return messages.reduce((obj, e) => {
       e.words.forEach((w) => (obj[w.name] = [...(obj[w.name] ?? []), e.time]));
       return obj;
