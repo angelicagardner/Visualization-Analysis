@@ -1,57 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
-import { DataService } from '../../services/data-service';
 
-function SunBurst({ filter, updateFilter, data, timeRange, location }) {
-  const [dimensions, updateDimensions] = useState({
-    ids: [],
-    labels: [],
-    parents: [],
-    values: [],
-    colors: [],
-  });
+function SunBurst({ filters, data, update }) {
+  const [plotData, updatePlotData] = useState([
+    {
+      type: 'sunburst',
+      ...data,
+      marker: { line: { width: 2 } },
+      branchvalues: 'total',
+      insidetextorientation: 'radial',
+    },
+  ]);
+
+  useEffect(() => {
+    updatePlotData([
+      {
+        type: 'sunburst',
+        ...data,
+        marker: { line: { width: 2 } },
+        branchvalues: 'total',
+        insidetextorientation: 'radial',
+      },
+    ]);
+  }, [data]);
 
   const clickHandler = (e) => {
     const { currentPath, label, id } = e.points[0];
 
     setTimeout(() => {
-      if (currentPath === undefined || id === filter.id) {
+      if (currentPath === undefined || id === filters.cluster.id) {
         // Unset the filter
-        updateFilter({
-          name: undefined,
-          id: undefined,
-          color: undefined,
-        });
+        update(undefined, undefined);
       } else {
         if (currentPath === '/') {
           // Set new filter
-          updateFilter({
-            name: label,
-            id,
-            color: dimensions.colors[dimensions.ids.indexOf(id)],
-          });
+          update(label, id);
         }
       }
     }, 1000);
   };
 
-  useEffect(() => {
-    const loadData = async () => {
-      let result = await DataService.getCluster(data, []);
-      updateDimensions({ ...result });
-    };
-
-    loadData();
-  }, [data]);
-
   return (
     <Plot
-      data={[
-        {
-          type: 'sunburst',
-          ...dimensions,
-        },
-      ]}
+      data={plotData}
       layout={{
         // sunburstcolorway: dimensions.colors.map((m) => `hsl(${m},100%,60%)`),
         paper_bgcolor: 'transparent',
