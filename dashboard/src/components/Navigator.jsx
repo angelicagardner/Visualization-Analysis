@@ -12,7 +12,7 @@ function Navigator({ tab, update }) {
         </label>
         <span
           style={{
-            transform: `translateX(${tab === 'Overview' ? '-50%' : '50%'})`,
+            transform: `translateX(${tab === 'Overview' ? '0' : '100%'})`,
           }}
           class="glider"
           onClick={() => update(tab === 'Overview' ? 'Details' : 'Overview')}
