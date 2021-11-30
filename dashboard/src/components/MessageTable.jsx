@@ -1,8 +1,23 @@
+import { useState } from 'react';
+import ReactSearchBox from 'react-search-box';
+
 function MessageTable({ data }) {
+  let [filteredData, setFilteredData] = useState(data, 1);
+  const filterData = (search) => {
+    return data.filter((item) => item.message.toLowerCase().includes(search));
+  };
   return (
     <div className="messageTable">
       <div className="table-title">
         <h3>Data Table</h3>
+        <ReactSearchBox
+          placeholder="Search..."
+          message=""
+          data={data}
+          onChange={(search) =>
+            setFilteredData(filterData(search.toLowerCase()))
+          }
+        />
       </div>
       <div className="table-fill">
         <table>
@@ -15,9 +30,9 @@ function MessageTable({ data }) {
               <td>Tags</td>
             </tr>
           </thead>
-          {data.length ? (
+          {filteredData.length ? (
             <tbody>
-              {data.map((d) => (
+              {filteredData.map((d) => (
                 <tr key={d.id}>
                   <td>{d.time}</td>
                   <td>{d.location}</td>
@@ -28,7 +43,7 @@ function MessageTable({ data }) {
               ))}
             </tbody>
           ) : (
-            ''
+            <p className="no-data">No messages found.</p>
           )}
         </table>
       </div>
