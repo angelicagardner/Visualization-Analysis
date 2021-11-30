@@ -41,13 +41,13 @@
 
   .overlay {
     position: fixed;
-    padding: 4rem 3rem;
+    padding: 1.2rem 0.85rem;
     display: flex;
     align-items: center;
     color: #2f2f2f;
     background: rgba(255, 255, 255, 0.8);
     box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.75);
-    border-radius: 2rem;
+    border-radius: 1rem;
     z-index: 3;
 
     &::after {
@@ -72,8 +72,7 @@
       background: #fff0;
       cursor: pointer;
       width: 50px;
-      padding: 5px;
-      margin: 10px;
+      padding: 10px;
 
       &:hover {
         fill: #7e7e7e;
@@ -86,15 +85,17 @@
   }
 
   .overlay_title {
-    font-size: 1.875rem;
-    line-height: 2.75rem;
+    font-size: 1.75rem;
+    line-height: 1rem;
     font-weight: 700;
     letter-spacing: -0.025em;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    margin-right: 40px;
   }
 
   .overlay_container {
-    font-weight: 400;
+    font-weight: 500;
+    font-size: 1rem;
   }
 
   .legend {
