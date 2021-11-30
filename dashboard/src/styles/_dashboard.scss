@@ -23,6 +23,65 @@
       font-weight: 700;
     }
 
+    .navigator {
+      *,
+      *:after,
+      *:before {
+        box-sizing: border-box;
+      }
+
+      margin: auto;
+
+      .tab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 50px;
+        width: 150px;
+        font-size: 1rem;
+        font-weight: 500;
+        border-radius: 99px; // just a high number to create pill effect
+        cursor: pointer;
+        transition: color 0.15s ease-in;
+        color: #b1b9c7;
+      }
+
+      .glider {
+        position: absolute;
+        height: 50px;
+        width: 150px;
+        background-color: #cdd6e6;
+        z-index: 1;
+        border-radius: 99px; // just a high number to create pill effect
+        transition: 0.25s ease-out;
+        color: #2f2f2f;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+      }
+
+      .tabs {
+        display: flex;
+        position: relative;
+        background-color: rgba(0, 0, 0, 0.25);
+        box-shadow: 0 0 2px 0 rgba(#92a9d5, 0.15),
+          0 1px 10px 0 rgba(#577bbe, 0.25);
+        padding: 0.5rem;
+        border-radius: 99px; // just a high number to create pill effect
+
+        * {
+          z-index: 2;
+        }
+
+        input[type='radio'] {
+          display: none;
+        }
+      }
+    }
+
     .messageMeter {
       margin: auto;
       display: flex;

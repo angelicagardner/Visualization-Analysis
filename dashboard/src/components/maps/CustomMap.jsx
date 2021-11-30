@@ -86,7 +86,7 @@ function CustomMap({ selected, update, layout, data }) {
   }, [data]);
 
   const setLocation = (e, title, id, totalMessages) => {
-    if (layout.page === 'OVERVIEW')
+    if (layout.page === 'Overview')
       setTooltip({
         position: {
           left: e.nativeEvent.x,
@@ -109,7 +109,7 @@ function CustomMap({ selected, update, layout, data }) {
           title={selected.name}
           position={tooltip.position}
           visible={
-            layout.page === 'OVERVIEW' && selected.id !== undefined
+            layout.page === 'Overview' && selected.id !== undefined
               ? true
               : false
           }

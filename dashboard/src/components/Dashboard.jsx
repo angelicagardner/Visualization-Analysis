@@ -7,6 +7,7 @@ import SunBurst from './plots/SunBurst';
 import CustomMap from './maps/CustomMap';
 import Details from './Details';
 import MessageMeter from './MessageMeter';
+import Navigator from './Navigator';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class Dashboard extends Component {
         filtered: [],
       },
       layout: {
-        page: 'OVERVIEW',
+        page: 'Overview',
         map: {
           bottom: 0,
           left: '40vw',
@@ -121,11 +122,11 @@ class Dashboard extends Component {
 
   switchTab(name) {
     switch (name) {
-      case 'OVERVIEW':
+      case 'Overview':
         this.setState({
           layout: {
             ...this.state.layout,
-            page: 'OVERVIEW',
+            page: 'Overview',
             map: {
               bottom: 0,
               left: '40vw',
@@ -138,11 +139,11 @@ class Dashboard extends Component {
           },
         });
         break;
-      case 'MESSAGES':
+      case 'Details':
         this.setState({
           layout: {
             ...this.state.layout,
-            page: 'MESSAGES',
+            page: 'Details',
             map: {
               bottom: '35vh',
               left: '0vw',
@@ -165,6 +166,10 @@ class Dashboard extends Component {
       <div className="dashboard">
         <div className="navigation">
           <h1>Visual Explorer</h1>
+          <Navigator
+            tab={this.state.layout.page}
+            update={(name) => this.switchTab(name)}
+          />
           <MessageMeter
             data={DataService.getMessageMeterData(
               this.state.data.filtered.length
@@ -172,10 +177,6 @@ class Dashboard extends Component {
           />
         </div>
         <div className="main-container">
-          <div className="tabs">
-            <button onClick={() => this.switchTab('OVERVIEW')}>Overview</button>
-            <button onClick={() => this.switchTab('MESSAGES')}>Messages</button>
-          </div>
           <div className="control">
             <WordCloud
               layout={this.state.layout}
