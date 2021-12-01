@@ -37,6 +37,26 @@
     border-spacing: 5px;
   }
 
+  thead {
+    td {
+      font-size: 0.9rem;
+      &:not(:last-child) {
+        min-width: 90px;
+      }
+      span {
+        padding-left: 5px;
+      }
+    }
+    td.span-sort.sorted {
+      span {
+        color: red;
+      }
+    }
+    td.span-sort {
+      cursor: pointer;
+    }
+  }
+
   tbody {
     font-size: small;
     font-weight: 300;

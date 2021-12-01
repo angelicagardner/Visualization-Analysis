@@ -30,6 +30,7 @@ class Dashboard extends Component {
           name: undefined,
           id: undefined,
         },
+        sortedBy: undefined,
       },
       data: {
         wordCloud: [],
@@ -97,6 +98,22 @@ class Dashboard extends Component {
       data: {
         ...this.state.data,
         map: await this.service.getLocations(newFilters),
+        wordCloud: await this.service.getKeywords(newFilters),
+        timeline: await this.service.getTimeline(newFilters),
+        filtered: await this.service.getFilteredMessages(newFilters),
+      },
+    });
+  }
+
+  async updateSortedByHandler(sortedBy) {
+    const newFilters = {
+      ...this.state.filters,
+      sortedBy: sortedBy,
+    };
+    this.setState({
+      filters: newFilters,
+      data: {
+        ...this.state.data,
         wordCloud: await this.service.getKeywords(newFilters),
         timeline: await this.service.getTimeline(newFilters),
         filtered: await this.service.getFilteredMessages(newFilters),
@@ -202,6 +219,8 @@ class Dashboard extends Component {
             layout={this.state.layout}
             data={this.state.data.filtered}
             location={this.state.selectedLocation}
+            update={(sortedBy) => this.updateSortedByHandler(sortedBy)}
+            sortingOrder={this.state.filters.sortedBy}
           />
         </div>
         <div className="timeline">

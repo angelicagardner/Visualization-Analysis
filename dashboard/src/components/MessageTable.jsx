@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ReactSearchBox from 'react-search-box';
 
-function MessageTable({ data }) {
-  let [filteredData, setFilteredData] = useState(data, 1);
-  const filterData = (search) => {
-    return data.filter((item) => item.message.toLowerCase().includes(search));
+function MessageTable({ sortingOrder, data, update }) {
+  const [tableData, updateTableData] = useState(data, 1);
+  // const filterData = (search) => {
+  //   return data.filter((item) => item.message.toLowerCase().includes(search));
+  // };
+  useEffect(() => {
+    updateTableData(data);
+  }, [data]);
+
+  const sortData = (sortBy) => {
+    update(sortBy);
   };
+
   return (
     <div className="messageTable">
       <div className="table-title">
@@ -14,25 +22,84 @@ function MessageTable({ data }) {
           placeholder="Search..."
           message=""
           data={data}
-          onChange={(search) =>
-            setFilteredData(filterData(search.toLowerCase()))
-          }
+          onChange={(search) => console.log(search.toLowerCase())}
         />
       </div>
       <div className="table-fill">
         <table>
           <thead>
             <tr>
-              <td>Time</td>
-              <td>Location</td>
-              <td>User</td>
+              <td
+                className={
+                  'span-sort' +
+                  (sortingOrder === undefined ||
+                  sortingOrder === 'timeASC' ||
+                  sortingOrder === 'timeDESC'
+                    ? ' sorted'
+                    : '')
+                }
+                onClick={() =>
+                  sortingOrder !== 'timeASC'
+                    ? sortData('timeASC')
+                    : sortData('timeDESC')
+                }
+              >
+                Time
+                {sortingOrder !== 'timeDESC' ? <span>▼</span> : <span>▲</span>}
+              </td>
+              <td
+                className={
+                  'span-sort' +
+                  (sortingOrder === 'locationASC' ||
+                  sortingOrder === 'locationDESC'
+                    ? ' sorted'
+                    : '')
+                }
+                onClick={() =>
+                  sortingOrder !== 'locationASC'
+                    ? sortData('locationASC')
+                    : sortData('locationDESC')
+                }
+              >
+                Location
+                {new Set(tableData.map((item) => item.location)).size > 1 ? (
+                  sortingOrder !== 'locationDESC' ? (
+                    <span>▼</span>
+                  ) : (
+                    <span>▲</span>
+                  )
+                ) : (
+                  ''
+                )}
+              </td>
+              <td
+                className={
+                  'span-sort' +
+                  (sortingOrder === 'accountASC' ||
+                  sortingOrder === 'accountDESC'
+                    ? ' sorted'
+                    : '')
+                }
+                onClick={() =>
+                  sortingOrder !== 'accountASC'
+                    ? sortData('accountASC')
+                    : sortData('accountDESC')
+                }
+              >
+                User{' '}
+                {sortingOrder !== 'accountDESC' ? (
+                  <span>▼</span>
+                ) : (
+                  <span>▲</span>
+                )}
+              </td>
               <td>Messages</td>
               <td>Tags</td>
             </tr>
           </thead>
-          {filteredData.length ? (
+          {tableData.length ? (
             <tbody>
-              {filteredData.map((d) => (
+              {tableData.map((d) => (
                 <tr key={d.id}>
                   <td>{d.time}</td>
                   <td>{d.location}</td>

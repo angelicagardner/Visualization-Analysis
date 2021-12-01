@@ -14,7 +14,7 @@ export class DataService {
   static meterTips = [
     'Results will be instantly computed.',
     'Reasonable computing time.',
-    'You may experience a very small delay.',
+    'You may experience a small delay.',
     'It takes time to compute, please be patient.',
   ];
   static meterColorClass = ['blue', 'green', 'orange', 'red'];
@@ -197,6 +197,25 @@ export class DataService {
         (d) =>
           d.time >= filters.timeRange.start && d.time <= filters.timeRange.end
       );
+    }
+
+    if (filters?.sortedBy) {
+      let filter = filters.sortedBy.replace('ASC', '').replace('DESC', '');
+      let asc = filters.sortedBy.includes('ASC');
+
+      if (asc) {
+        data = data.sort((a, b) => {
+          if (a[filter] < b[filter]) return -1;
+          if (a[filter] > b[filter]) return 1;
+          return 0;
+        });
+      } else {
+        data = data.sort((a, b) => {
+          if (b[filter] < a[filter]) return -1;
+          if (b[filter] > a[filter]) return 1;
+          return 0;
+        });
+      }
     }
 
     return data;
