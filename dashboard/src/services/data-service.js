@@ -218,6 +218,12 @@ export class DataService {
       }
     }
 
+    if (filters?.searchQuery) {
+      data = data.filter((d) =>
+        d.message.toLowerCase().includes(filters.searchQuery.toLowerCase())
+      );
+    }
+
     return data;
   }
 

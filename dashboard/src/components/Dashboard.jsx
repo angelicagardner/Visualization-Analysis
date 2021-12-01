@@ -31,6 +31,7 @@ class Dashboard extends Component {
           id: undefined,
         },
         sortedBy: undefined,
+        searchQuery: undefined,
       },
       data: {
         wordCloud: [],
@@ -105,10 +106,11 @@ class Dashboard extends Component {
     });
   }
 
-  async updateSortedByHandler(sortedBy) {
+  async updateSortedByHandler(sortedBy, searchQuery) {
     const newFilters = {
       ...this.state.filters,
       sortedBy: sortedBy,
+      searchQuery: searchQuery,
     };
     this.setState({
       filters: newFilters,
@@ -125,6 +127,7 @@ class Dashboard extends Component {
     const newFilters = {
       ...this.state.filters,
       location: { name, id },
+      searchQuery: undefined,
     };
     this.setState({
       filters: newFilters,
@@ -137,10 +140,19 @@ class Dashboard extends Component {
     });
   }
 
-  switchTab(name) {
+  async switchTab(name) {
     switch (name) {
       case 'Overview':
+        const newFilters = {
+          ...this.state.filters,
+          searchQuery: undefined,
+        };
         this.setState({
+          messages: [],
+          data: {
+            ...this.state.data,
+            filtered: await this.service.getFilteredMessages(newFilters),
+          },
           layout: {
             ...this.state.layout,
             page: 'Overview',
@@ -219,8 +231,11 @@ class Dashboard extends Component {
             layout={this.state.layout}
             data={this.state.data.filtered}
             location={this.state.selectedLocation}
-            update={(sortedBy) => this.updateSortedByHandler(sortedBy)}
+            update={(sortedBy, searchQuery) =>
+              this.updateSortedByHandler(sortedBy, searchQuery)
+            }
             sortingOrder={this.state.filters.sortedBy}
+            searchQuery={this.state.filters.searchQuery}
           />
         </div>
         <div className="timeline">

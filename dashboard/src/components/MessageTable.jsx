@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import ReactSearchBox from 'react-search-box';
 
-function MessageTable({ sortingOrder, data, update }) {
+function MessageTable({ sortingOrder, searchQuery, data, update }) {
   const [tableData, updateTableData] = useState(data, 1);
-  // const filterData = (search) => {
-  //   return data.filter((item) => item.message.toLowerCase().includes(search));
-  // };
+
   useEffect(() => {
     updateTableData(data);
   }, [data]);
 
-  const sortData = (sortBy) => {
-    update(sortBy);
+  const clickHandler = (sortBy, search) => {
+    const delayDebounceFn = setTimeout(() => {
+      update(sortBy, search);
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
   };
 
   return (
@@ -22,7 +23,9 @@ function MessageTable({ sortingOrder, data, update }) {
           placeholder="Search..."
           message=""
           data={data}
-          onChange={(search) => console.log(search.toLowerCase())}
+          onChange={(search) => {
+            clickHandler(sortingOrder, search.toLowerCase());
+          }}
         />
       </div>
       <div className="table-fill">
@@ -40,8 +43,8 @@ function MessageTable({ sortingOrder, data, update }) {
                 }
                 onClick={() =>
                   sortingOrder !== 'timeASC'
-                    ? sortData('timeASC')
-                    : sortData('timeDESC')
+                    ? clickHandler('timeASC', searchQuery)
+                    : clickHandler('timeDESC', searchQuery)
                 }
               >
                 Time
@@ -57,8 +60,8 @@ function MessageTable({ sortingOrder, data, update }) {
                 }
                 onClick={() =>
                   sortingOrder !== 'locationASC'
-                    ? sortData('locationASC')
-                    : sortData('locationDESC')
+                    ? clickHandler('locationASC', searchQuery)
+                    : clickHandler('locationDESC', searchQuery)
                 }
               >
                 Location
@@ -82,8 +85,8 @@ function MessageTable({ sortingOrder, data, update }) {
                 }
                 onClick={() =>
                   sortingOrder !== 'accountASC'
-                    ? sortData('accountASC')
-                    : sortData('accountDESC')
+                    ? clickHandler('accountASC', searchQuery)
+                    : clickHandler('accountDESC', searchQuery)
                 }
               >
                 User{' '}
