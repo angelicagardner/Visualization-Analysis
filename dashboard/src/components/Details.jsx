@@ -2,7 +2,14 @@ import RidgeLine from './plots/Ridgeline';
 import { motion, AnimatePresence } from 'framer-motion';
 import MessageTable from './MessageTable';
 
-function Details({ layout, data, location }) {
+function Details({
+  layout,
+  data,
+  location,
+  update,
+  sortingOrder,
+  searchQuery,
+}) {
   return (
     <AnimatePresence exitBeforeEnter>
       {layout.details.visible ? (
@@ -15,7 +22,12 @@ function Details({ layout, data, location }) {
           transition={{ duration: 0.7 }}
         >
           <RidgeLine data={data} />
-          <MessageTable data={data} />
+          <MessageTable
+            sortingOrder={sortingOrder}
+            searchQuery={searchQuery}
+            data={data}
+            update={update}
+          />
         </motion.div>
       ) : null}
     </AnimatePresence>

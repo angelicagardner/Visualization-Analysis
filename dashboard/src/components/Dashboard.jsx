@@ -30,6 +30,8 @@ class Dashboard extends Component {
           name: undefined,
           id: undefined,
         },
+        sortedBy: undefined,
+        searchQuery: undefined,
       },
       data: {
         wordCloud: [],
@@ -104,10 +106,11 @@ class Dashboard extends Component {
     });
   }
 
-  async updateLocationHandler(name, id) {
+  async updateSortedByHandler(sortedBy, searchQuery) {
     const newFilters = {
       ...this.state.filters,
-      location: { name, id },
+      sortedBy: sortedBy,
+      searchQuery: searchQuery,
     };
     this.setState({
       filters: newFilters,
@@ -120,10 +123,36 @@ class Dashboard extends Component {
     });
   }
 
-  switchTab(name) {
+  async updateLocationHandler(name, id) {
+    const newFilters = {
+      ...this.state.filters,
+      location: { name, id },
+      searchQuery: undefined,
+    };
+    this.setState({
+      filters: newFilters,
+      data: {
+        ...this.state.data,
+        wordCloud: await this.service.getKeywords(newFilters),
+        timeline: await this.service.getTimeline(newFilters),
+        filtered: await this.service.getFilteredMessages(newFilters),
+      },
+    });
+  }
+
+  async switchTab(name) {
     switch (name) {
       case 'Overview':
+        const newFilters = {
+          ...this.state.filters,
+          searchQuery: undefined,
+        };
         this.setState({
+          messages: [],
+          data: {
+            ...this.state.data,
+            filtered: await this.service.getFilteredMessages(newFilters),
+          },
           layout: {
             ...this.state.layout,
             page: 'Overview',
@@ -202,6 +231,11 @@ class Dashboard extends Component {
             layout={this.state.layout}
             data={this.state.data.filtered}
             location={this.state.selectedLocation}
+            update={(sortedBy, searchQuery) =>
+              this.updateSortedByHandler(sortedBy, searchQuery)
+            }
+            sortingOrder={this.state.filters.sortedBy}
+            searchQuery={this.state.filters.searchQuery}
           />
         </div>
         <div className="timeline">
