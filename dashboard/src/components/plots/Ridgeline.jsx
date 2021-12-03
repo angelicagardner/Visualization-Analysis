@@ -33,7 +33,7 @@ function RidgeLine({ data }) {
           },
           autosize: true,
           responsive: true,
-          margin: { l: 100, r: 25, b: 25, t: 50, pad: 5 },
+          margin: { l: 100, r: 25, b: 5, t: 5, pad: 5 },
           paper_bgcolor: 'transparent',
           plot_bgcolor: 'transparent',
         }}
