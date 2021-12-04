@@ -235,11 +235,10 @@ export class DataService {
   }
 
   static getMessageMeterData(length) {
-    console.log(length, Math.log10(length / 10 + 1));
     const rate = Math.log10(length / 10 + 1) / DataService.meterTips.length;
     const percent = rate <= 1 ? rate : 1;
     const index = Math.round(percent * (DataService.meterTips.length - 1));
-    console.log(rate, percent, index);
+
     return {
       tip: this.meterTips[index],
       colorClass: this.meterColorClass[index],

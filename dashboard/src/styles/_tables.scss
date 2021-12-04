@@ -11,10 +11,11 @@
     justify-content: space-between;
     align-items: center;
     margin: auto;
-    padding: 1rem 1rem 0 1rem;
+    padding: 0.5rem 1rem 0 1rem;
   }
 
   .table-title h3 {
+    font-size: 1.2rem;
     color: #4e5066;
   }
 
@@ -28,7 +29,7 @@
   .table-fill {
     margin: auto;
     padding: 0 1rem 1rem 1rem;
-    height: 22vh;
+    height: 19vh;
     overflow-y: scroll;
   }
 
@@ -39,9 +40,9 @@
 
   thead {
     td {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       &:not(:last-child) {
-        min-width: 90px;
+        min-width: 100px;
       }
       span {
         padding-left: 5px;
@@ -58,7 +59,7 @@
   }
 
   tbody {
-    font-size: small;
+    font-size: 0.75rem;
     font-weight: 300;
 
     tr:hover td {
@@ -74,12 +75,11 @@
 
     td {
       background: #ffffff;
-      padding: 5px;
+      padding: 0.2rem 0.35rem;
       text-align: left;
       vertical-align: middle;
       border-radius: 5px;
       border: none;
-      height: 50px;
     }
   }
 }
