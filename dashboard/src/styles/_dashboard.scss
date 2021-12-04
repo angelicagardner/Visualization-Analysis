@@ -19,7 +19,7 @@
 
     h1 {
       margin: auto;
-      font-size: 3rem;
+      font-size: 4.5vh;
       font-weight: 700;
     }
 
@@ -36,7 +36,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 50px;
+        height: 4.5vh;
         width: 150px;
         font-size: 1rem;
         font-weight: 500;
@@ -48,7 +48,7 @@
 
       .glider {
         position: absolute;
-        height: 50px;
+        height: 4.5vh;
         width: 150px;
         background-color: #e1e6ee;
         z-index: 1;
@@ -73,7 +73,7 @@
         background-color: rgba(0, 0, 0, 0.25);
         box-shadow: 0 0 2px 0 rgba(#92a9d5, 0.15),
           0 1px 10px 0 rgba(#577bbe, 0.25);
-        padding: 0.5rem;
+        padding: 5px;
         border-radius: 99px; // just a high number to create pill effect
 
         * {
@@ -96,7 +96,7 @@
       .tips {
         padding: 5px;
         font-weight: 300;
-        font-size: 1rem;
+        font-size: 1.25vh;
       }
 
       .meter {
@@ -104,7 +104,7 @@
         flex-direction: row;
         justify-content: center;
         font-weight: 700;
-        font-size: 1.5rem;
+        font-size: 2vh;
 
         span {
           margin-left: 10px;
@@ -262,15 +262,15 @@
     left: 40vw;
     top: 0;
     bottom: 0;
-    max-height: 50vw;
+    max-height: 68vh;
     margin: auto;
     background-color: aliceblue;
-    padding: 0.5rem 1rem 1rem 1rem;
+    padding: 1rem 1rem;
     display: flex;
     align-items: stretch;
     color: #2f2f2f;
     box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.75);
-    border-radius: 2rem;
+    border-radius: 1rem;
     flex-direction: column;
     width: 58%;
     align-content: center;
@@ -278,22 +278,18 @@
 
     .ridgeLine {
       width: 100%;
-      height: 100%;
-      padding: 0;
+      height: 45vh;
+      padding: 1rem;
+      display: flex;
+      align-content: stretch;
+      flex-direction: column;
+      justify-content: center;
+      align-items: stretch;
     }
 
-    .plot-container.plotly {
-      .svg-container {
-        height: 100% !important;
-      }
-    }
-
-    .js-plotly-plot {
-      .plotly {
-        .main-svg {
-          min-height: 470px;
-        }
-      }
+    .messageTable {
+      height: 20vh;
+      overflow: hidden;
     }
   }
 
