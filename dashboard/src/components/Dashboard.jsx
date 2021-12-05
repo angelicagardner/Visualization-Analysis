@@ -54,6 +54,7 @@ class Dashboard extends Component {
           visible: false,
         },
       },
+      ready: false,
     };
   }
 
@@ -69,6 +70,7 @@ class Dashboard extends Component {
           timeline: await this.service.getTimeline({}),
           filtered: await this.service.getFilteredMessages({}),
         },
+        ready: true,
       });
     });
   }
@@ -86,6 +88,7 @@ class Dashboard extends Component {
         wordCloud: await this.service.getKeywords(newFilters),
         filtered: await this.service.getFilteredMessages(newFilters),
       },
+      ready: true,
     });
   }
 
@@ -103,6 +106,7 @@ class Dashboard extends Component {
         timeline: await this.service.getTimeline(newFilters),
         filtered: await this.service.getFilteredMessages(newFilters),
       },
+      ready: true,
     });
   }
 
@@ -120,6 +124,7 @@ class Dashboard extends Component {
         timeline: await this.service.getTimeline(newFilters),
         filtered: await this.service.getFilteredMessages(newFilters),
       },
+      ready: true,
     });
   }
 
@@ -137,6 +142,7 @@ class Dashboard extends Component {
         timeline: await this.service.getTimeline(newFilters),
         filtered: await this.service.getFilteredMessages(newFilters),
       },
+      ready: true,
     });
   }
 
@@ -166,6 +172,7 @@ class Dashboard extends Component {
               visible: false,
             },
           },
+          ready: true,
         });
         break;
       case 'Details':
@@ -183,6 +190,7 @@ class Dashboard extends Component {
               visible: true,
             },
           },
+          ready: true,
         });
         break;
       default:
@@ -193,6 +201,19 @@ class Dashboard extends Component {
   render() {
     return (
       <div className="dashboard">
+        {!this.state.ready ? (
+          <div className="loading">
+            <div className="container">
+              <span class="loader">
+                <span class="loader-inner"></span>
+              </span>
+              <h1>Loading ...</h1>
+              <span className="message">Please wait!</span>
+            </div>
+          </div>
+        ) : (
+          ''
+        )}
         <div className="navigation">
           <h1>Visual Explorer</h1>
           <Navigator
