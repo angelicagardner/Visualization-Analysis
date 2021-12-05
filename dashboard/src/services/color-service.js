@@ -55,4 +55,10 @@ export class ColorService {
 
     return neutral.range;
   }
+
+  static getClusterBaseColorById(id) {
+    if (id) return this.#qualitative[parseInt(id) % this.#qualitative.length];
+
+    return neutral.base;
+  }
 }
