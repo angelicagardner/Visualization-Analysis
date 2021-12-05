@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import MapToolTip from './MapToolTip';
+import { ColorService } from '../../services/color-service';
 import { motion } from 'framer-motion';
 
-function CustomMap({ selected, update, layout, data }) {
+function CustomMap({ selected, update, layout, data, cluster }) {
   const [mapInfo, setMapInfo] = useState({
     locations: {
       palacehills: { style: { fill: '#fff', fillOpacity: 0.1 }, text: '' },
@@ -26,14 +27,7 @@ function CustomMap({ selected, update, layout, data }) {
       westparton: { style: { fill: '#fff', fillOpacity: 0.1 }, text: '' },
     },
     legend: {
-      start: {
-        value: 0,
-        color: '#FFF',
-      },
-      end: {
-        value: 0,
-        color: '#FFF',
-      },
+      indicators: [],
     },
   });
 
@@ -48,9 +42,14 @@ function CustomMap({ selected, update, layout, data }) {
   useEffect(() => {
     const loadData = async () => {
       const max = Math.max(...data.map((item) => item.value));
+      const colorPalette = ColorService.getClusterColorById(cluster.id);
+      const stepSize = max / colorPalette.length;
 
-      const getColor = () => {
-        return 0;
+      // console.log(cluster);
+      const getColor = (value) => {
+        return colorPalette[
+          Math.floor(((value ?? 0) / max) * (colorPalette.length - 1))
+        ];
       };
 
       setMapInfo({
@@ -60,7 +59,7 @@ function CustomMap({ selected, update, layout, data }) {
             ...{
               [cur.location.toLowerCase().replace(' ', '')]: {
                 style: {
-                  fill: `hsl(${getColor()},${(cur.value / max) * 100}%,60%)`,
+                  fill: getColor(cur.value),
                   fillOpacity: 1,
                 },
                 text: cur.value,
@@ -70,20 +69,19 @@ function CustomMap({ selected, update, layout, data }) {
           {}
         ),
         legend: {
-          start: {
-            value: 0,
-            color: `hsl(${getColor()},0%,60%)`,
-          },
-          end: {
-            value: max,
-            color: `hsl(${getColor()},100%,60%)`,
-          },
+          indicators: ColorService.getClusterColorById(cluster.id).map(
+            (v, i) => ({
+              start: Math.round(i * stepSize),
+              end: Math.round((i + 1) * stepSize),
+              color: v,
+            })
+          ),
         },
       });
     };
 
     loadData();
-  }, [data]);
+  }, [data, cluster.id]);
 
   const setLocation = (e, title, id, totalMessages) => {
     if (layout.page === 'Overview')
@@ -532,20 +530,17 @@ function CustomMap({ selected, update, layout, data }) {
           </text>
         </svg>
         <div className="legend">
-          <div className="range">
-            <span>{mapInfo.legend.start.value}</span>
-            <span>{mapInfo.legend.end.value}</span>
-          </div>
-          <div
-            className="gradient"
-            style={{
-              background: `linear-gradient(
-              to right,
-              ${mapInfo.legend.start.color},
-              ${mapInfo.legend.end.color}
-            )`,
-            }}
-          ></div>
+          {mapInfo.legend.indicators.map((v, i) => (
+            <div className="indicator" key={i}>
+              <div className="range">
+                {v.start} - {v.end}
+              </div>
+              <div
+                className="colorBar"
+                style={{ backgroundColor: v.color }}
+              ></div>
+            </div>
+          ))}
         </div>
       </div>
     </motion.div>

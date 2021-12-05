@@ -101,19 +101,27 @@
   .legend {
     width: 50%;
     margin: auto;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-content: center;
 
-    .range {
-      display: flex;
-      justify-content: space-between;
-      flex-direction: row;
-      align-content: center;
-      font-size: 1.5vh;
-    }
-    .gradient {
-      border: #2f2f2f 1px solid;
-      border-radius: 0.5rem;
-      box-shadow: 0 0.1rem 3rem 0 rgba(0, 0, 0, 0.5);
-      height: 1vh;
+    .indicator {
+      flex-grow: 1;
+      margin: 1px;
+
+      .colorBar {
+        height: 1vh;
+        border: 0px;
+        border-radius: 2px;
+      }
+
+      .range {
+        font-weight: 100;
+        font-size: 0.75rem;
+        text-align: center;
+      }
     }
   }
 }

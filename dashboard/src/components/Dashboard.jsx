@@ -224,6 +224,7 @@ class Dashboard extends Component {
             data={this.state.data.map}
             selected={this.state.filters.location}
             layout={this.state.layout}
+            cluster={this.state.filters.cluster}
             update={(name, id) => this.updateLocationHandler(name, id)}
           />
 
