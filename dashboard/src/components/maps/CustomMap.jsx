@@ -41,14 +41,22 @@ function CustomMap({ selected, update, layout, data, cluster }) {
 
   useEffect(() => {
     const loadData = async () => {
-      const max = Math.max(...data.map((item) => item.value));
+      const max =
+        Math.ceil(Math.max(...data.map((item) => item.value)) / 100) * 100;
       const colorPalette = ColorService.getClusterColorById(cluster.id);
       const stepSize = max / colorPalette.length;
+      const indicators = ColorService.getClusterColorById(cluster.id).map(
+        (v, i) => ({
+          start: Math.round(i * stepSize),
+          end: Math.round((i + 1) * stepSize),
+          color: v,
+        })
+      );
 
       // console.log(cluster);
       const getColor = (value) => {
         return colorPalette[
-          Math.floor(((value ?? 0) / max) * (colorPalette.length - 1))
+          Math.round(((value ?? 0) / max) * (colorPalette.length - 1))
         ];
       };
 
@@ -69,13 +77,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
           {}
         ),
         legend: {
-          indicators: ColorService.getClusterColorById(cluster.id).map(
-            (v, i) => ({
-              start: Math.round(i * stepSize),
-              end: Math.round((i + 1) * stepSize),
-              color: v,
-            })
-          ),
+          indicators,
         },
       });
     };
@@ -113,7 +115,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
           }
           closeCallback={() => update(undefined, undefined)}
         >
-          Number of messages: <strong>{tooltip.totalMessages}</strong>
+          Number of messages: <strong>{tooltip.totalMessages ?? 0}</strong>
         </MapToolTip>
         <svg
           className="canvas"
@@ -127,7 +129,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.palacehills?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -135,7 +137,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Palace Hills',
                 'palacehills',
-                mapInfo.locations.northwest.text
+                mapInfo.locations.northwest?.text ?? 0
               )
             }
           ></path>
@@ -146,7 +148,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.northwest?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -154,7 +156,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Northwest',
                 'northwest',
-                mapInfo.locations.northwest.text
+                mapInfo.locations.northwest?.text ?? 0
               )
             }
           ></path>
@@ -165,7 +167,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.oldtown?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -173,7 +175,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Old Town',
                 'oldtown',
-                mapInfo.locations.oldtown.text
+                mapInfo.locations.oldtown?.text ?? 0
               )
             }
           ></path>
@@ -184,7 +186,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.safetown?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -192,7 +194,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Safe Town',
                 'safetown',
-                mapInfo.locations.safetown.text
+                mapInfo.locations.safetown?.text ?? 0
               )
             }
           ></path>
@@ -203,7 +205,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.southwest?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -211,7 +213,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Southwest',
                 'southwest',
-                mapInfo.locations.southwest.text
+                mapInfo.locations.southwest?.text ?? 0
               )
             }
           ></path>
@@ -222,7 +224,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.downtown?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -230,7 +232,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Downtown',
                 'downtown',
-                mapInfo.locations.downtown.text
+                mapInfo.locations.downtown?.text ?? 0
               )
             }
           ></path>
@@ -241,7 +243,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.wilsonforest?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -249,7 +251,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Wilson Forest',
                 'wilsonforest',
-                mapInfo.locations.wilsonforest.text
+                mapInfo.locations.wilsonforest?.text ?? 0
               )
             }
           ></path>
@@ -260,7 +262,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.scenicvista?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -268,7 +270,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Scenic Vista',
                 'scenicvista',
-                mapInfo.locations.scenicvista.text
+                mapInfo.locations.scenicvista?.text ?? 0
               )
             }
           ></path>
@@ -279,7 +281,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.broadview?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -287,7 +289,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Broadview',
                 'broadview',
-                mapInfo.locations.broadview.text
+                mapInfo.locations.broadview?.text ?? 0
               )
             }
           ></path>
@@ -298,7 +300,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.chapparal?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -306,7 +308,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Chapparal',
                 'chapparal',
-                mapInfo.locations.chapparal.text
+                mapInfo.locations.chapparal?.text ?? 0
               )
             }
           ></path>
@@ -317,7 +319,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.terrapinsprings?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -325,7 +327,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Terrapin Springs',
                 'terrapinsprings',
-                mapInfo.locations.terrapinsprings.text
+                mapInfo.locations.terrapinsprings?.text ?? 0
               )
             }
           ></path>
@@ -336,7 +338,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.peppermill?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -344,7 +346,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Pepper Mill',
                 'peppermill',
-                mapInfo.locations.peppermill.text
+                mapInfo.locations.peppermill?.text ?? 0
               )
             }
           ></path>
@@ -355,7 +357,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.cheddarford?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -363,7 +365,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Cheddarford',
                 'cheddarford',
-                mapInfo.locations.cheddarford.text
+                mapInfo.locations.cheddarford?.text ?? 0
               )
             }
           ></path>
@@ -374,7 +376,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.easton?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -388,7 +390,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.weston?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -402,7 +404,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.southton?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -410,7 +412,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Southton',
                 'southton',
-                mapInfo.locations.southton.text
+                mapInfo.locations.southton?.text ?? 0
               )
             }
           ></path>
@@ -421,7 +423,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.oakwillow?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -429,7 +431,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'Oak Willow',
                 'oakwillow',
-                mapInfo.locations.oakwillow.text
+                mapInfo.locations.oakwillow?.text ?? 0
               )
             }
           ></path>
@@ -440,7 +442,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.eastparton?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -448,7 +450,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'East Parton',
                 'eastparton',
-                mapInfo.locations.eastparton.text
+                mapInfo.locations.eastparton?.text ?? 0
               )
             }
           ></path>
@@ -459,7 +461,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
             style={
               mapInfo.locations.westparton?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -467,7 +469,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
                 e,
                 'West Parton',
                 'westparton',
-                mapInfo.locations.westparton.text
+                mapInfo.locations.westparton?.text ?? 0
               )
             }
           ></path>
