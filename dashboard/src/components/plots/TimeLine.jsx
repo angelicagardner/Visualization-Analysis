@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Plot from 'react-plotly.js';
 import Moment from 'moment';
+import { ColorService } from '../../services/color-service';
 
 function TimeLine({ update, timeRange, location, data, cluster }) {
   const [range, setRange] = useState([]);
@@ -22,13 +23,9 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
       autobins: true,
       histnorm: 'count',
       marker: {
-        color: '#FFF',
-        line: {
-          color: '#FFF',
-          width: 1,
-        },
+        color: '#525252',
       },
-      opacity: 0.75,
+      opacity: 1,
       type: 'histogram',
     },
   ];
@@ -39,13 +36,9 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
       name: cluster.name,
       histnorm: 'count',
       marker: {
-        color: '#F25',
-        line: {
-          color: '#F25',
-          width: 1,
-        },
+        color: ColorService.getClusterBaseColorById(cluster.id),
       },
-      opacity: 0.75,
+      opacity: 1,
       type: 'histogram',
     });
   }
@@ -56,13 +49,9 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
       name: location.name,
       histnorm: 'count',
       marker: {
-        color: '#3E5',
-        line: {
-          color: '#3E5',
-          width: 1,
-        },
+        color: '#FFF',
       },
-      opacity: 0.75,
+      opacity: 1,
       type: 'histogram',
     });
   }
@@ -73,13 +62,9 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
       name: `${location.name} & ${cluster.name}`,
       histnorm: 'count',
       marker: {
-        color: '#37D',
-        line: {
-          color: '#37D',
-          width: 1,
-        },
+        color: ColorService.getClusterColorById(cluster.id)[5],
       },
-      opacity: 0.75,
+      opacity: 1,
       type: 'histogram',
     });
   }
