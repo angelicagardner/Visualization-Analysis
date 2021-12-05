@@ -1,3 +1,5 @@
+import { ColorService } from './color-service';
+
 export class DataService {
   static instance = null;
   messages = {
@@ -110,14 +112,16 @@ export class DataService {
   }
 
   async getCluster(filters) {
-    const temp = Object.keys(this.messages.byCluster).map((c) =>
-      this.messages.byCluster[c].reduce((obj, e) => {
-        e.cluster_keywords.forEach(
-          (w) => (obj[w.name] = (obj[w.name] || 0) + w.count)
-        );
-        return obj;
-      }, {})
-    );
+    const temp = Object.keys(this.messages.byCluster)
+      .sort()
+      .map((c) =>
+        this.messages.byCluster[c].reduce((obj, e) => {
+          e.cluster_keywords.forEach(
+            (w) => (obj[w.name] = (obj[w.name] || 0) + w.count)
+          );
+          return obj;
+        }, {})
+      );
 
     const ids = [];
     const labels = [];
@@ -129,7 +133,8 @@ export class DataService {
       labels.push('C' + key);
       parents.push('');
       values.push(Object.keys(temp[key]).reduce((a, c) => a + temp[key][c], 0));
-
+    }
+    for (const key in temp) {
       for (const word in temp[key]) {
         ids.push(`${key} - ${word}`);
         labels.push(word);
@@ -143,7 +148,10 @@ export class DataService {
       labels,
       parents,
       values,
-      colors: Object.keys(ids),
+      marker: {
+        line: { width: 1, color: 'rgba(0,0,0,0.5)' },
+        colors: ColorService.getClusterColors().slice(0, temp.length),
+      },
     };
   }
 

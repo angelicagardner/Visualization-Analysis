@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
+import { ColorService } from '../../services/color-service';
 
 function SunBurst({ filters, data, update }) {
   const [plotData, updatePlotData] = useState([
     {
       type: 'sunburst',
       ...data,
-      marker: { line: { width: 2 } },
       branchvalues: 'total',
       insidetextorientation: 'radial',
     },
@@ -17,7 +17,6 @@ function SunBurst({ filters, data, update }) {
       {
         type: 'sunburst',
         ...data,
-        marker: { line: { width: 2 } },
         branchvalues: 'total',
         insidetextorientation: 'radial',
       },
@@ -44,7 +43,7 @@ function SunBurst({ filters, data, update }) {
     <Plot
       data={plotData}
       layout={{
-        // sunburstcolorway: dimensions.colors.map((m) => `hsl(${m},100%,60%)`),
+        sunburstcolorway: ColorService.getClusterColors(),
         paper_bgcolor: 'transparent',
         margin: { pad: 0, t: 10, b: 10, r: 0, l: 0 },
       }}
