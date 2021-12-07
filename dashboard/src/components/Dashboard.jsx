@@ -204,8 +204,8 @@ class Dashboard extends Component {
         {!this.state.ready ? (
           <div className="loading">
             <div className="container">
-              <span class="loader">
-                <span class="loader-inner"></span>
+              <span className="loader">
+                <span className="loader-inner"></span>
               </span>
               <h1>Loading ...</h1>
               <span className="message">Please wait!</span>
