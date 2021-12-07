@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { DataService } from '../../services/data-service';
 import MapToolTip from './MapToolTip';
+import { ColorService } from '../../services/color-service';
 import { motion } from 'framer-motion';
 
-function CustomMap({
-  timeRange,
-  selected,
-  updateLocation,
-  filter,
-  layout,
-  data,
-}) {
+function CustomMap({ selected, update, layout, data, cluster }) {
   const [mapInfo, setMapInfo] = useState({
     locations: {
       palacehills: { style: { fill: '#fff', fillOpacity: 0.1 }, text: '' },
@@ -34,14 +27,7 @@ function CustomMap({
       westparton: { style: { fill: '#fff', fillOpacity: 0.1 }, text: '' },
     },
     legend: {
-      start: {
-        value: 0,
-        color: '#FFF',
-      },
-      end: {
-        value: 0,
-        color: '#FFF',
-      },
+      indicators: [],
     },
   });
 
@@ -54,22 +40,32 @@ function CustomMap({
   });
 
   useEffect(() => {
-    const loadData = async (start, end) => {
-      let result = await DataService.getLocations(data, []);
-      const max = Math.max(...result.map((item) => item.value));
+    const loadData = async () => {
+      const max =
+        Math.ceil(Math.max(...data.map((item) => item.value)) / 100) * 100;
+      const colorPalette = ColorService.getClusterColorById(cluster.id);
+      const stepSize = max / colorPalette.length;
+      const indicators = ColorService.getClusterColorById(cluster.id).map(
+        (v, i) => ({
+          start: Math.round(i * stepSize),
+          end: Math.round((i + 1) * stepSize),
+          color: v,
+        })
+      );
 
-      const getColor = () => {
-        return filter.color ?? 0;
+      // console.log(cluster);
+      const getColor = (value) => {
+        return colorPalette[Math.floor((value ?? 0) / stepSize)];
       };
 
       setMapInfo({
-        locations: result.reduce(
+        locations: data.reduce(
           (acc, cur) => ({
             ...acc,
             ...{
               [cur.location.toLowerCase().replace(' ', '')]: {
                 style: {
-                  fill: `hsl(${getColor()},${(cur.value / max) * 100}%,60%)`,
+                  fill: getColor(cur.value),
                   fillOpacity: 1,
                 },
                 text: cur.value,
@@ -79,23 +75,16 @@ function CustomMap({
           {}
         ),
         legend: {
-          start: {
-            value: 0,
-            color: `hsl(${getColor()},0%,60%)`,
-          },
-          end: {
-            value: max,
-            color: `hsl(${getColor()},100%,60%)`,
-          },
+          indicators,
         },
       });
     };
 
-    loadData(timeRange.start, timeRange.end);
-  }, [timeRange, filter, data]);
+    loadData();
+  }, [data, cluster.id]);
 
   const setLocation = (e, title, id, totalMessages) => {
-    if (layout.page === 'OVERVIEW')
+    if (layout.page === 'Overview')
       setTooltip({
         position: {
           left: e.nativeEvent.x,
@@ -103,7 +92,7 @@ function CustomMap({
         },
         totalMessages,
       });
-    updateLocation({ name: title, id });
+    update(title, id);
   };
 
   return (
@@ -118,15 +107,13 @@ function CustomMap({
           title={selected.name}
           position={tooltip.position}
           visible={
-            layout.page === 'OVERVIEW' && selected.id !== undefined
+            layout.page === 'Overview' && selected.id !== undefined
               ? true
               : false
           }
-          closeCallback={() =>
-            updateLocation({ name: undefined, id: undefined })
-          }
+          closeCallback={() => update(undefined, undefined)}
         >
-          Number of messages: <strong>{tooltip.totalMessages}</strong>
+          Number of messages: <strong>{tooltip.totalMessages ?? 0}</strong>
         </MapToolTip>
         <svg
           className="canvas"
@@ -140,7 +127,7 @@ function CustomMap({
             style={
               mapInfo.locations.palacehills?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -148,7 +135,7 @@ function CustomMap({
                 e,
                 'Palace Hills',
                 'palacehills',
-                mapInfo.locations.northwest.text
+                mapInfo.locations.northwest?.text ?? 0
               )
             }
           ></path>
@@ -159,7 +146,7 @@ function CustomMap({
             style={
               mapInfo.locations.northwest?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -167,7 +154,7 @@ function CustomMap({
                 e,
                 'Northwest',
                 'northwest',
-                mapInfo.locations.northwest.text
+                mapInfo.locations.northwest?.text ?? 0
               )
             }
           ></path>
@@ -178,7 +165,7 @@ function CustomMap({
             style={
               mapInfo.locations.oldtown?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -186,7 +173,7 @@ function CustomMap({
                 e,
                 'Old Town',
                 'oldtown',
-                mapInfo.locations.oldtown.text
+                mapInfo.locations.oldtown?.text ?? 0
               )
             }
           ></path>
@@ -197,7 +184,7 @@ function CustomMap({
             style={
               mapInfo.locations.safetown?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -205,7 +192,7 @@ function CustomMap({
                 e,
                 'Safe Town',
                 'safetown',
-                mapInfo.locations.safetown.text
+                mapInfo.locations.safetown?.text ?? 0
               )
             }
           ></path>
@@ -216,7 +203,7 @@ function CustomMap({
             style={
               mapInfo.locations.southwest?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -224,7 +211,7 @@ function CustomMap({
                 e,
                 'Southwest',
                 'southwest',
-                mapInfo.locations.southwest.text
+                mapInfo.locations.southwest?.text ?? 0
               )
             }
           ></path>
@@ -235,7 +222,7 @@ function CustomMap({
             style={
               mapInfo.locations.downtown?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -243,7 +230,7 @@ function CustomMap({
                 e,
                 'Downtown',
                 'downtown',
-                mapInfo.locations.downtown.text
+                mapInfo.locations.downtown?.text ?? 0
               )
             }
           ></path>
@@ -254,7 +241,7 @@ function CustomMap({
             style={
               mapInfo.locations.wilsonforest?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -262,7 +249,7 @@ function CustomMap({
                 e,
                 'Wilson Forest',
                 'wilsonforest',
-                mapInfo.locations.wilsonforest.text
+                mapInfo.locations.wilsonforest?.text ?? 0
               )
             }
           ></path>
@@ -273,7 +260,7 @@ function CustomMap({
             style={
               mapInfo.locations.scenicvista?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -281,7 +268,7 @@ function CustomMap({
                 e,
                 'Scenic Vista',
                 'scenicvista',
-                mapInfo.locations.scenicvista.text
+                mapInfo.locations.scenicvista?.text ?? 0
               )
             }
           ></path>
@@ -292,7 +279,7 @@ function CustomMap({
             style={
               mapInfo.locations.broadview?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -300,7 +287,7 @@ function CustomMap({
                 e,
                 'Broadview',
                 'broadview',
-                mapInfo.locations.broadview.text
+                mapInfo.locations.broadview?.text ?? 0
               )
             }
           ></path>
@@ -311,7 +298,7 @@ function CustomMap({
             style={
               mapInfo.locations.chapparal?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -319,7 +306,7 @@ function CustomMap({
                 e,
                 'Chapparal',
                 'chapparal',
-                mapInfo.locations.chapparal.text
+                mapInfo.locations.chapparal?.text ?? 0
               )
             }
           ></path>
@@ -330,7 +317,7 @@ function CustomMap({
             style={
               mapInfo.locations.terrapinsprings?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -338,7 +325,7 @@ function CustomMap({
                 e,
                 'Terrapin Springs',
                 'terrapinsprings',
-                mapInfo.locations.terrapinsprings.text
+                mapInfo.locations.terrapinsprings?.text ?? 0
               )
             }
           ></path>
@@ -349,7 +336,7 @@ function CustomMap({
             style={
               mapInfo.locations.peppermill?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -357,7 +344,7 @@ function CustomMap({
                 e,
                 'Pepper Mill',
                 'peppermill',
-                mapInfo.locations.peppermill.text
+                mapInfo.locations.peppermill?.text ?? 0
               )
             }
           ></path>
@@ -368,7 +355,7 @@ function CustomMap({
             style={
               mapInfo.locations.cheddarford?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -376,7 +363,7 @@ function CustomMap({
                 e,
                 'Cheddarford',
                 'cheddarford',
-                mapInfo.locations.cheddarford.text
+                mapInfo.locations.cheddarford?.text ?? 0
               )
             }
           ></path>
@@ -387,7 +374,7 @@ function CustomMap({
             style={
               mapInfo.locations.easton?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -401,7 +388,7 @@ function CustomMap({
             style={
               mapInfo.locations.weston?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -415,7 +402,7 @@ function CustomMap({
             style={
               mapInfo.locations.southton?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -423,7 +410,7 @@ function CustomMap({
                 e,
                 'Southton',
                 'southton',
-                mapInfo.locations.southton.text
+                mapInfo.locations.southton?.text ?? 0
               )
             }
           ></path>
@@ -434,7 +421,7 @@ function CustomMap({
             style={
               mapInfo.locations.oakwillow?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -442,7 +429,7 @@ function CustomMap({
                 e,
                 'Oak Willow',
                 'oakwillow',
-                mapInfo.locations.oakwillow.text
+                mapInfo.locations.oakwillow?.text ?? 0
               )
             }
           ></path>
@@ -453,7 +440,7 @@ function CustomMap({
             style={
               mapInfo.locations.eastparton?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -461,7 +448,7 @@ function CustomMap({
                 e,
                 'East Parton',
                 'eastparton',
-                mapInfo.locations.eastparton.text
+                mapInfo.locations.eastparton?.text ?? 0
               )
             }
           ></path>
@@ -472,7 +459,7 @@ function CustomMap({
             style={
               mapInfo.locations.westparton?.style ?? {
                 fill: '#fff',
-                fillOpacity: 0.1,
+                fillOpacity: 1,
               }
             }
             onClick={(e) =>
@@ -480,7 +467,7 @@ function CustomMap({
                 e,
                 'West Parton',
                 'westparton',
-                mapInfo.locations.westparton.text
+                mapInfo.locations.westparton?.text ?? 0
               )
             }
           ></path>
@@ -543,20 +530,17 @@ function CustomMap({
           </text>
         </svg>
         <div className="legend">
-          <div className="range">
-            <span>{mapInfo.legend.start.value}</span>
-            <span>{mapInfo.legend.end.value}</span>
-          </div>
-          <div
-            className="gradient"
-            style={{
-              background: `linear-gradient(
-              to right,
-              ${mapInfo.legend.start.color},
-              ${mapInfo.legend.end.color}
-            )`,
-            }}
-          ></div>
+          {mapInfo.legend.indicators.map((v, i) => (
+            <div className="indicator" key={i}>
+              <div className="range">
+                {v.start} - {v.end}
+              </div>
+              <div
+                className="colorBar"
+                style={{ backgroundColor: v.color }}
+              ></div>
+            </div>
+          ))}
         </div>
       </div>
     </motion.div>

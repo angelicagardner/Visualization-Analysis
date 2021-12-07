@@ -7,30 +7,59 @@
   width: 100%;
 
   div.table-title {
-    display: block;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin: auto;
-    padding: 1rem;
+    padding: 0.5rem 1rem 0 1rem;
   }
 
   .table-title h3 {
+    font-size: 1.2rem;
     color: #4e5066;
+  }
+
+  .no-data {
+    margin-top: 1rem;
+    font-weight: 700;
   }
 
   /*** Table Styles **/
 
   .table-fill {
     margin: auto;
-    padding: 0.75rem;
-    height: 20vh;
+    padding: 0 1rem 1rem 1rem;
+    height: 19vh;
     overflow-y: scroll;
   }
 
   table {
     width: 100%;
+    border-spacing: 5px;
+  }
+
+  thead {
+    td {
+      font-size: 0.85rem;
+      &:not(:last-child) {
+        min-width: 100px;
+      }
+      span {
+        padding-left: 5px;
+      }
+    }
+    td.span-sort.sorted {
+      span {
+        color: red;
+      }
+    }
+    td.span-sort {
+      cursor: pointer;
+    }
   }
 
   tbody {
-    font-size: small;
+    font-size: 0.75rem;
     font-weight: 300;
 
     tr:hover td {
@@ -46,12 +75,11 @@
 
     td {
       background: #ffffff;
-      padding: 5px;
+      padding: 0.2rem 0.35rem;
       text-align: left;
       vertical-align: middle;
       border-radius: 5px;
       border: none;
-      height: 50px;
     }
   }
 }

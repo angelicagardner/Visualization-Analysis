@@ -1,8 +1,9 @@
 import os
 
-from flask import Flask, Blueprint, request, jsonify
+from flask import Flask, Blueprint, request, jsonify, Response
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from numpy import int0
 from sqlalchemy.sql.functions import func
 from flask_marshmallow import Marshmallow
 
@@ -29,11 +30,15 @@ class Message(db.Model):
     location = db.Column(db.String(100), nullable=False)
     account = db.Column(db.String(100), nullable=False)
     message = db.Column(db.String(100), nullable=False)
-    cluster = db.Column(db.Integer, nullable=False)
+    cluster = db.Column(db.String(100), nullable=False)
     cluster_keyword1 = db.Column(db.String(100), nullable=False)
+    keyword1_count = db.Column(db.Integer, nullable=False)
     cluster_keyword2 = db.Column(db.String(100), nullable=False)
+    keyword2_count = db.Column(db.Integer, nullable=False)
     cluster_keyword3 = db.Column(db.String(100), nullable=False)
+    keyword3_count = db.Column(db.Integer, nullable=False)
     cluster_keyword4 = db.Column(db.String(100), nullable=False)
+    keyword4_count = db.Column(db.Integer, nullable=False)
     word1 = db.Column(db.String(100))
     weight1 = db.Column(db.Float)
     word2 = db.Column(db.String(100))
@@ -41,7 +46,8 @@ class Message(db.Model):
     
 
     def __init__(self, time, location, account, message, 
-                cluster, cluster_keyword1, cluster_keyword2, cluster_keyword3, cluster_keyword4, 
+                cluster, cluster_keyword1, keyword1_count, cluster_keyword2, keyword2_count,
+                cluster_keyword3, keyword3_count, cluster_keyword4, keyword4_count,
                 word1, weight1, word2, weight2):
         self.time = time
         self.location = location
@@ -49,9 +55,13 @@ class Message(db.Model):
         self.message = message
         self.cluster = cluster
         self.cluster_keyword1 = cluster_keyword1
+        self.keyword1_count = keyword1_count
         self.cluster_keyword2 = cluster_keyword2
+        self.keyword2_count = keyword2_count
         self.cluster_keyword3 = cluster_keyword3
+        self.keyword3_count = keyword3_count
         self.cluster_keyword4 = cluster_keyword4
+        self.keyword4_count = keyword4_count
         self.word1 = word1
         self.weight1 = weight1
         self.word2 = word2
@@ -63,7 +73,8 @@ class Message(db.Model):
 class MessageSchema(ma.Schema):
     class Meta:
         fields = ('id', 'time', 'location', 'account', 'message', 
-        'cluster', 'cluster_keyword1', 'cluster_keyword2', 'cluster_keyword3', 'cluster_keyword4', 
+        'cluster', 'cluster_keyword1', 'keyword1_count', 'cluster_keyword2', 'keyword2_count',
+        'cluster_keyword3', 'keyword3_count', 'cluster_keyword4', 'keyword4_count',
         'word1', 'weight1', 'word2', 'weight2')
 
 message_schema = MessageSchema()
@@ -84,12 +95,21 @@ def get_messages():
     result = messages_schema.dump(all_messages)
 
     for object in result:
-        object['cluster_keywords'] = [object['cluster_keyword1'], object['cluster_keyword2'], 
-                                        object['cluster_keyword3'], object['cluster_keyword4']]
+        object['cluster_keywords'] = [
+            { "name": object['cluster_keyword1'], "count": object['keyword1_count'] }, 
+            { "name": object['cluster_keyword2'], "count": object['keyword2_count'] },
+            { "name": object['cluster_keyword3'], "count": object['keyword3_count'] },
+            { "name": object['cluster_keyword4'], "count": object['keyword4_count'] }
+        ]
         del object['cluster_keyword1']
+        del object['keyword1_count']
         del object['cluster_keyword2']
+        del object['keyword2_count']
         del object['cluster_keyword3']
+        del object['keyword3_count']
         del object['cluster_keyword4']
+        del object['keyword4_count']
+
         if object['word1'] == None and object['word2'] == None:
             object['words'] = []
 
@@ -122,6 +142,29 @@ def get_messages():
     result = messages_schema.dump(all_messages)
 
     return jsonify(result)
+
+@v2.route('/topics', methods=['POST'])
+def update_topic_names():
+    cluster_id = request.args.get('cluster_id', default=None, type=str)
+    cluster_name = request.args.get('cluster_name', default=None, type=str)
+
+    if cluster_id == None:
+        return jsonify({"message": "Information about the cluster is missing"}), 400
+    
+    # Check if cluster_name is already taken by another cluster
+    exists = Message.query.filter_by(cluster=cluster_name).first()
+    if exists != None:
+        return jsonify({"message": "Cluster name already taken"}), 400
+    
+    if cluster_name != None:
+        try:
+            Message.query.filter(Message.cluster == cluster_id).update(dict(cluster=cluster_name))
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            return Response('', status=201, mimetype='application/json')
+    
+    return Response('', status=201, mimetype='application/json')
 
 
 @v1.route('/locations', methods=['GET'])

@@ -2,6 +2,7 @@
   position: relative;
   height: 100vh;
   width: 100vw;
+  font-family: 'Raleway', sans-serif;
 
   .navigation {
     position: absolute;
@@ -9,10 +10,192 @@
     left: 0;
     right: 0;
     height: 7vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: stretch;
+    flex-wrap: nowrap;
+    align-items: stretch;
 
     h1 {
-      padding: 1vh;
-      font-family: 'Raleway', sans-serif;
+      margin: auto;
+      font-size: 4.5vh;
+      font-weight: 700;
+    }
+
+    .navigator {
+      *,
+      *:after,
+      *:before {
+        box-sizing: border-box;
+      }
+
+      margin: auto;
+
+      .tab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 4.5vh;
+        width: 150px;
+        font-size: 1rem;
+        font-weight: 500;
+        border-radius: 99px; // just a high number to create pill effect
+        cursor: pointer;
+        transition: color 0.15s ease-in;
+        color: #b1b9c7;
+      }
+
+      .glider {
+        position: absolute;
+        height: 4.5vh;
+        width: 150px;
+        background-color: #e1e6ee;
+        z-index: 1;
+        border-radius: 99px; // just a high number to create pill effect
+        transition: 0.25s ease-out;
+        color: #2f2f2f;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #ffffff;
+        }
+      }
+
+      .tabs {
+        display: flex;
+        position: relative;
+        background-color: rgba(0, 0, 0, 0.25);
+        box-shadow: 0 0 2px 0 rgba(#92a9d5, 0.15),
+          0 1px 10px 0 rgba(#577bbe, 0.25);
+        padding: 5px;
+        border-radius: 99px; // just a high number to create pill effect
+
+        * {
+          z-index: 2;
+        }
+
+        input[type='radio'] {
+          display: none;
+        }
+      }
+    }
+
+    .messageMeter {
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .tips {
+        padding: 5px;
+        font-weight: 300;
+        font-size: 1.25vh;
+      }
+
+      .meter {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 2vh;
+
+        span {
+          margin-left: 10px;
+        }
+      }
+
+      progress {
+        display: block; /* default: inline-block */
+        padding: 2px 1px 1px 1px;
+        border: 0 none;
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 0.25rem;
+        box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5),
+          0px 1px 0px rgba(255, 255, 255, 0.2);
+      }
+
+      .blue {
+        progress::-moz-progress-bar {
+          border-radius: 0.2rem;
+          background: #2dacd1;
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4),
+            0 2px 5px 0px rgba(0, 0, 0, 0.3);
+        }
+        /* webkit */
+        progress::-webkit-progress-bar {
+          background: transparent;
+        }
+        progress::-webkit-progress-value {
+          border-radius: 0.2rem;
+          background: #2dacd1;
+          box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+            0 2px 5px 0px rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      .green {
+        progress::-moz-progress-bar {
+          border-radius: 0.2rem;
+          background: #90b900;
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4),
+            0 2px 5px 0px rgba(0, 0, 0, 0.3);
+        }
+        /* webkit */
+        progress::-webkit-progress-bar {
+          background: transparent;
+        }
+        progress::-webkit-progress-value {
+          border-radius: 0.2rem;
+          background: #90b900;
+          box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+            0 2px 5px 0px rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      .orange {
+        progress::-moz-progress-bar {
+          border-radius: 0.2rem;
+          background: #dfb81c;
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4),
+            0 2px 5px 0px rgba(0, 0, 0, 0.3);
+        }
+        /* webkit */
+        progress::-webkit-progress-bar {
+          background: transparent;
+        }
+        progress::-webkit-progress-value {
+          border-radius: 0.2rem;
+          background: #dfb81c;
+          box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+            0 2px 5px 0px rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      .red {
+        progress::-moz-progress-bar {
+          border-radius: 0.2rem;
+          background: #e85656;
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4),
+            0 2px 5px 0px rgba(0, 0, 0, 0.3);
+        }
+        /* webkit */
+        progress::-webkit-progress-bar {
+          background: transparent;
+        }
+        progress::-webkit-progress-value {
+          border-radius: 0.2rem;
+          background: #e85656;
+          box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+            0 2px 5px 0px rgba(0, 0, 0, 0.3);
+        }
+      }
     }
   }
 
@@ -24,34 +207,6 @@
     left: 0;
     right: 0;
     box-shadow: inset 0 0rem 2rem 0 rgba(0, 0, 0, 0.75);
-  }
-
-  .tabs {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-
-    button {
-      margin: 2rem 1rem;
-      box-shadow: 0 0rem 1rem 0 rgba(0, 0, 0, 0.5);
-      padding: 0.75rem;
-      font-family: 'Raleway', sans-serif;
-      font-weight: 500;
-      font-size: medium;
-      cursor: pointer;
-      z-index: 2;
-      color: white;
-      background-color: rgb(116, 123, 150);
-      border-radius: 0.5rem;
-      border: none;
-
-      &:hover {
-        background-color: rgb(205, 166, 51);
-      }
-    }
   }
 
   .control {
@@ -107,7 +262,7 @@
     left: 40vw;
     top: 0;
     bottom: 0;
-    max-height: 50vw;
+    max-height: 68vh;
     margin: auto;
     background-color: aliceblue;
     padding: 1rem 1rem;
@@ -115,7 +270,7 @@
     align-items: stretch;
     color: #2f2f2f;
     box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.75);
-    border-radius: 2rem;
+    border-radius: 1rem;
     flex-direction: column;
     width: 58%;
     align-content: center;
@@ -123,8 +278,18 @@
 
     .ridgeLine {
       width: 100%;
-      height: 30vh;
-      padding: 2rem;
+      height: 45vh;
+      padding: 1rem;
+      display: flex;
+      align-content: stretch;
+      flex-direction: column;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .messageTable {
+      height: 20vh;
+      overflow: hidden;
     }
   }
 
