@@ -55,9 +55,7 @@ function CustomMap({ selected, update, layout, data, cluster }) {
 
       // console.log(cluster);
       const getColor = (value) => {
-        return colorPalette[
-          Math.round(((value ?? 0) / max) * (colorPalette.length - 1))
-        ];
+        return colorPalette[Math.floor((value ?? 0) / stepSize)];
       };
 
       setMapInfo({
