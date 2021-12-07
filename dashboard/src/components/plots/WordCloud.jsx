@@ -9,12 +9,12 @@ const options = {
   enableTooltip: true,
   deterministic: false,
   fontFamily: 'impact',
-  fontSizes: [5, 60],
+  fontSizes: [12, 100],
   fontStyle: 'normal',
   fontWeight: 'normal',
   padding: 1,
   rotations: 3,
-  rotationAngles: [-60, 60],
+  rotationAngles: [-45, 45],
   scale: 'sqrt',
   spiral: 'archimedean',
   transitionDuration: 500,
@@ -28,7 +28,7 @@ function getCallback(callback) {
     text
       .on('click', () => {
         if (isActive) {
-          window.open(`https://google.com/?q=${word.text}`, '_blank');
+          // window.open(`https://google.com/?q=${word.text}`, '_blank');
         }
       })
       .transition()
@@ -36,21 +36,30 @@ function getCallback(callback) {
   };
 }
 
-const callbacks = {
-  getWordColor: (word) => (word.value > 300 ? '#94B6E2' : '#E2C094'),
-  getWordTooltip: (word) =>
-    `The word "${word.text}" appears ${word.value} times.`,
-  onWordClick: getCallback('onWordClick'),
-  onWordMouseOut: getCallback('onWordMouseOut'),
-  onWordMouseOver: getCallback('onWordMouseOver'),
-};
-
 function WordCloud({ layout, data }) {
   const [words, setWords] = useState([]);
 
   useEffect(() => {
-    setWords(data);
+    setWords(data.sort((a, b) => b.value - a.value));
   }, [data]);
+
+  const q1 = words[3]?.value ?? 0;
+  const q2 = words[8]?.value ?? 0;
+  const q3 = words[12]?.value ?? 0;
+
+  const callbacks = {
+    getWordColor: (word) => {
+      if (word.value > q1) return '#ffff';
+      if (word.value > q2) return '#fffb';
+      if (word.value > q3) return '#fff9';
+      return '#fff6';
+    },
+    getWordTooltip: (word) =>
+      `The word "${word.text}" appears ${word.value} times.`,
+    onWordClick: getCallback('onWordClick'),
+    onWordMouseOut: getCallback('onWordMouseOut'),
+    onWordMouseOver: getCallback('onWordMouseOver'),
+  };
 
   return (
     <AnimatePresence exitBeforeEnter>
