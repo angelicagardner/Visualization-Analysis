@@ -1,5 +1,12 @@
 version: '3.7'
 services:
+  web:
+    image: nginx:latest
+    volumes:
+      - ./dashboard/build:/usr/share/nginx/html
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
   ml:
     build:
       context: .
@@ -7,7 +14,7 @@ services:
     volumes:
       - './ml-flask-api:/app'
     ports:
-      - '5000:5000'
+      - '8000:5000'
     environment:
       - Environment=development
       - FLASK_ENV=development
