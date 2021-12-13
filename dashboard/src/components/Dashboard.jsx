@@ -86,6 +86,7 @@ class Dashboard extends Component {
         ...this.state.data,
         map: await this.service.getLocations(newFilters),
         wordCloud: await this.service.getKeywords(newFilters),
+        timeline: await this.service.getTimeline(newFilters),
         filtered: await this.service.getFilteredMessages(newFilters),
       },
       ready: true,
