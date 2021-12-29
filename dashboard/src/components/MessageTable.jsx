@@ -120,7 +120,18 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
                   <td>{reformatTime(d.time)}</td>
                   <td>{d.location}</td>
                   <td>{d.account}</td>
-                  <td>{d.message}</td>
+                  <td>
+                    {d.message.split(' ').map((m) => (
+                      <span>
+                        {m.toLowerCase().replace('?', '').replace('!', '') ===
+                        searchQuery ? (
+                          <span className="search">{m} </span>
+                        ) : (
+                          m + ' '
+                        )}
+                      </span>
+                    ))}
+                  </td>
                   <td>{d.words.map((w) => w.name).join(', ')}</td>
                 </tr>
               ))}
