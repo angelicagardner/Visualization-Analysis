@@ -18,7 +18,7 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
   return (
     <div className="messageTable">
       <div className="table-title">
-        <h3>Data Table</h3>
+        <h3>Message Table</h3>
         <ReactSearchBox
           placeholder="Search..."
           message=""
