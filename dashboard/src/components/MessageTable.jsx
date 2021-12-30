@@ -123,7 +123,7 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
                   <td>
                     {d.message.split(' ').map((m) => (
                       <span>
-                        {m.toLowerCase().replace('?', '').replace('!', '') ===
+                        {m.toLowerCase().replace('?', '').replace('!', '').replace('.', '').replace(',', '') ===
                         searchQuery ? (
                           <span className="search">{m} </span>
                         ) : (
