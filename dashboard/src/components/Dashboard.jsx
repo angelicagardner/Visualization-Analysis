@@ -176,11 +176,11 @@ class Dashboard extends Component {
           ready: true,
         });
         break;
-      case 'Details':
+      case 'Messages':
         this.setState({
           layout: {
             ...this.state.layout,
-            page: 'Details',
+            page: 'Messages',
             map: {
               bottom: '35vh',
               left: '0vw',
