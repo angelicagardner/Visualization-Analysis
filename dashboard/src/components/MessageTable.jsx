@@ -15,6 +15,19 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
     return () => clearTimeout(delayDebounceFn);
   };
 
+  const reformatTime = (date) => {
+    let d = new Date(date);
+    let monthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
+      d
+    );
+    let day = d.getDate();
+    let hours = d.getHours();
+    hours = hours < 10 ? '0' + hours : hours;
+    let minutes = d.getMinutes();
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    return `${day} ${monthName} ${hours}:${minutes}`;
+  };
+
   return (
     <div className="messageTable">
       <div className="table-title">
@@ -104,10 +117,21 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
             <tbody>
               {tableData.map((d) => (
                 <tr key={d.id}>
-                  <td>{d.time}</td>
+                  <td>{reformatTime(d.time)}</td>
                   <td>{d.location}</td>
                   <td>{d.account}</td>
-                  <td>{d.message}</td>
+                  <td>
+                    {d.message.split(' ').map((m) => (
+                      <span>
+                        {m.toLowerCase().replace('?', '').replace('!', '').replace('.', '').replace(',', '') ===
+                        searchQuery ? (
+                          <span className="search">{m} </span>
+                        ) : (
+                          m + ' '
+                        )}
+                      </span>
+                    ))}
+                  </td>
                   <td>{d.words.map((w) => w.name).join(', ')}</td>
                 </tr>
               ))}

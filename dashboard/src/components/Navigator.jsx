@@ -6,7 +6,7 @@ function Navigator({ tab, update }) {
         <label className="tab" htmlFor="radio-1">
           Overview
         </label>
-        <input type="radio" id="radio-2" onClick={() => update('Details')} />
+        <input type="radio" id="radio-2" onClick={() => update('Messages')} />
         <label className="tab" htmlFor="radio-2">
           Messages
         </label>
@@ -15,7 +15,7 @@ function Navigator({ tab, update }) {
             transform: `translateX(${tab === 'Overview' ? '0' : '100%'})`,
           }}
           className="glider"
-          onClick={() => update(tab === 'Overview' ? 'Details' : 'Overview')}
+          onClick={() => update(tab === 'Overview' ? 'Messages' : 'Overview')}
         >
           {tab}
         </span>
