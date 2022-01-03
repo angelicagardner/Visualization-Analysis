@@ -15,11 +15,20 @@ function RidgeLine({ data }) {
       x: keywords[i],
       orientation: 'h',
       showlegend: false,
-      width: 3,
-      hoverinfo: 'x',
+      width: 1.5,
+      hoverinfo: 'skip',
       spanmode: 'soft',
+      marker: {
+        color: '#333',
+      },
+      meanline: {
+        visible: true,
+      },
+      box: {
+        visible: true,
+      },
     }))
-    .filter((v) => v.x.length > 1) // remove occurrence less than 1
+    .filter((v) => v.x.length > 3) // remove occurrence less than 3
     .sort((a, b) => b.x.length - a.x.length) // Sort based on number of values
     .slice(0, 10); // Show only the first 10
 
@@ -43,18 +52,18 @@ function RidgeLine({ data }) {
           yaxis: {
             showgrid: true,
             zeroline: false,
-            gridcolor: '#0003',
+            gridcolor: '#0002',
           },
           xaxis: {
             showgrid: true,
             zeroline: false,
-            gridcolor: '#0003',
+            gridcolor: '#0002',
             autorange: true,
             autotick: true,
           },
           autosize: true,
           responsive: true,
-          margin: { l: 60, r: 45, b: 35, t: 5, pad: 0 },
+          margin: { l: 100, r: 45, b: 50, t: 5, pad: 10 },
           paper_bgcolor: 'transparent',
           plot_bgcolor: 'transparent',
           height: layout.height,
