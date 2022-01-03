@@ -147,13 +147,13 @@ class Dashboard extends Component {
     });
   }
 
-  async switchTab(name) {
+  async switchTab(name, query) {
+    const newFilters = {
+      ...this.state.filters,
+      searchQuery: query,
+    };
     switch (name) {
       case 'Overview':
-        const newFilters = {
-          ...this.state.filters,
-          searchQuery: undefined,
-        };
         this.setState({
           messages: [],
           data: {
@@ -178,6 +178,11 @@ class Dashboard extends Component {
         break;
       case 'Messages':
         this.setState({
+          filters: newFilters,
+          data: {
+            ...this.state.data,
+            filtered: await this.service.getFilteredMessages(newFilters),
+          },
           layout: {
             ...this.state.layout,
             page: 'Messages',
@@ -219,7 +224,7 @@ class Dashboard extends Component {
           <h1>Visual Explorer</h1>
           <Navigator
             tab={this.state.layout.page}
-            update={(name) => this.switchTab(name)}
+            update={(name) => this.switchTab(name, undefined)}
           />
           <MessageMeter
             data={DataService.getMessageMeterData(
@@ -232,6 +237,7 @@ class Dashboard extends Component {
             <WordCloud
               layout={this.state.layout}
               data={this.state.data.wordCloud}
+              update={(word) => this.switchTab('Messages', word)}
             />
             <div className="sunburst" key="sunburst">
               <SunBurst

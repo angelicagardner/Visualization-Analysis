@@ -46,6 +46,9 @@ function SunBurst({ filters, data, update }) {
         sunburstcolorway: ColorService.getClusterColors(),
         paper_bgcolor: 'transparent',
         margin: { pad: 0, t: 10, b: 10, r: 0, l: 0 },
+        font: {
+          size: 14,
+        },
       }}
       onClick={clickHandler}
     />
