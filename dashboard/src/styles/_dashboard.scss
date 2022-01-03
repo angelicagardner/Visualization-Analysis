@@ -245,9 +245,9 @@
         display: none;
       }
 
-      .slice.cursor-pointer {
-        .slicetext {
-          visibility: hidden !important;
+      .slicetext {
+        text {
+          fill: #181a18 !important;
         }
       }
     }
