@@ -244,6 +244,12 @@
       .modebar-container {
         display: none;
       }
+
+      .slice.cursor-pointer {
+        .slicetext {
+          visibility: hidden !important;
+        }
+      }
     }
   }
 
