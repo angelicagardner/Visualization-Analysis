@@ -147,12 +147,12 @@ class Dashboard extends Component {
     });
   }
 
-  async switchTab(name) {
+  async switchTab(name, query) {
     switch (name) {
       case 'Overview':
         const newFilters = {
           ...this.state.filters,
-          searchQuery: undefined,
+          searchQuery: query,
         };
         this.setState({
           messages: [],
@@ -219,7 +219,7 @@ class Dashboard extends Component {
           <h1>Visual Explorer</h1>
           <Navigator
             tab={this.state.layout.page}
-            update={(name) => this.switchTab(name)}
+            update={(name) => this.switchTab(name, undefined)}
           />
           <MessageMeter
             data={DataService.getMessageMeterData(
@@ -232,7 +232,7 @@ class Dashboard extends Component {
             <WordCloud
               layout={this.state.layout}
               data={this.state.data.wordCloud}
-              update={(word) => this.switchTab('Details')} //console.log(word + 'works...')}
+              update={(word) => this.switchTab('Details', word)}
             />
             <div className="sunburst" key="sunburst">
               <SunBurst
