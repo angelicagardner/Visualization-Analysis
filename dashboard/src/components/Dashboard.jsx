@@ -232,6 +232,7 @@ class Dashboard extends Component {
             <WordCloud
               layout={this.state.layout}
               data={this.state.data.wordCloud}
+              update={(word) => this.switchTab('Details')} //console.log(word + 'works...')}
             />
             <div className="sunburst" key="sunburst">
               <SunBurst
