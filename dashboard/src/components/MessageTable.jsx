@@ -33,8 +33,11 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
       <div className="table-title">
         <h3>Message Table</h3>
         <ReactSearchBox
-          placeholder="Search..."
-          message=""
+          placeholder={
+            searchQuery === undefined || searchQuery === ''
+              ? 'Search...'
+              : searchQuery
+          }
           data={data}
           onChange={(search) => {
             clickHandler(sortingOrder, search.toLowerCase());
@@ -123,8 +126,12 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
                   <td>
                     {d.message.split(' ').map((m) => (
                       <span>
-                        {m.toLowerCase().replace('?', '').replace('!', '').replace('.', '').replace(',', '') ===
-                        searchQuery ? (
+                        {m
+                          .toLowerCase()
+                          .replace('?', '')
+                          .replace('!', '')
+                          .replace('.', '')
+                          .replace(',', '') === searchQuery ? (
                           <span className="search">{m} </span>
                         ) : (
                           m + ' '
