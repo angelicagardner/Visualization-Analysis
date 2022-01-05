@@ -1,6 +1,9 @@
-function MessageMeter({ data }) {
+function MessageMeter({ data, opacity = 1 }) {
   return (
-    <div className="messageMeter">
+    <div
+      className="messageMeter"
+      style={{ opacity, transition: '0.25s ease-out' }}
+    >
       <div className={`meter ${data.colorClass}`}>
         <progress max="100" value={data.percent * 100}></progress>
         <span>
