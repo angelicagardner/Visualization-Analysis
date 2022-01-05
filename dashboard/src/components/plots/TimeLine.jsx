@@ -43,10 +43,16 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
     },
   ];
 
+  const getSelectedClusterName = () => {
+    return !cluster.name || cluster.name === ''
+      ? 'Selected cluster'
+      : cluster.name;
+  };
+
   if (data?.cluster) {
     plotData.push({
       x: data.cluster,
-      name: cluster.name,
+      name: getSelectedClusterName(),
       histnorm: 'count',
       marker: {
         color: ColorService.getClusterBaseColorById(cluster.id),
@@ -72,7 +78,7 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
   if (data?.full) {
     plotData.push({
       x: data.full,
-      name: `${location.name} & ${cluster.name}`,
+      name: `${location.name} & ${getSelectedClusterName()}`,
       histnorm: 'count',
       marker: {
         color: ColorService.getClusterColorById(cluster.id)[5],
