@@ -147,61 +147,84 @@ class Dashboard extends Component {
     });
   }
 
+  hasNoFiler(filters) {
+    return (
+      filters.cluster.id === undefined &&
+      filters.location.id === undefined &&
+      filters.searchQuery === undefined &&
+      filters.timeRange.start === undefined &&
+      filters.timeRange.end === undefined
+    );
+  }
+
   async switchTab(name, query) {
     const newFilters = {
       ...this.state.filters,
       searchQuery: query,
     };
-    switch (name) {
-      case 'Overview':
-        this.setState({
-          messages: [],
-          data: {
-            ...this.state.data,
-            filtered: await this.service.getFilteredMessages(newFilters),
-          },
-          layout: {
-            ...this.state.layout,
-            page: 'Overview',
-            map: {
-              bottom: 0,
-              left: '40vw',
-              width: '60%',
-            },
-            wordCloud: { visible: true },
-            details: {
-              visible: false,
-            },
-          },
-          ready: true,
-        });
-        break;
-      case 'Messages':
-        this.setState({
-          filters: newFilters,
-          data: {
-            ...this.state.data,
-            filtered: await this.service.getFilteredMessages(newFilters),
-          },
-          layout: {
-            ...this.state.layout,
-            page: 'Messages',
-            map: {
-              bottom: '35vh',
-              left: '0vw',
-              width: '40%',
-            },
-            wordCloud: { visible: false },
-            details: {
-              visible: true,
-            },
-          },
-          ready: true,
-        });
-        break;
-      default:
-        console.log('Invalid tab name');
+
+    if (name === 'Messages' && this.hasNoFiler(newFilters)) {
+      if (
+        !window.confirm(
+          'The dataset is too large and processing might take time. You can make it smaller by adding some filters, otherwise press OK to continue.'
+        )
+      )
+        return;
     }
+
+    this.setState((state) => ({ ...state, ready: false }));
+    setTimeout(async () => {
+      switch (name) {
+        case 'Overview':
+          this.setState({
+            messages: [],
+            data: {
+              ...this.state.data,
+              filtered: await this.service.getFilteredMessages(newFilters),
+            },
+            layout: {
+              ...this.state.layout,
+              page: 'Overview',
+              map: {
+                bottom: 0,
+                left: '40vw',
+                width: '60%',
+              },
+              wordCloud: { visible: true },
+              details: {
+                visible: false,
+              },
+            },
+            ready: true,
+          });
+          break;
+        case 'Messages':
+          this.setState({
+            filters: newFilters,
+            data: {
+              ...this.state.data,
+              filtered: await this.service.getFilteredMessages(newFilters),
+            },
+            layout: {
+              ...this.state.layout,
+              page: 'Messages',
+              map: {
+                bottom: '35vh',
+                left: '0vw',
+                width: '40%',
+              },
+              wordCloud: { visible: false },
+              details: {
+                visible: true,
+              },
+            },
+            ready: true,
+          });
+          break;
+        default:
+          console.log('Invalid tab name');
+      }
+    }, 0);
   }
 
   render() {
