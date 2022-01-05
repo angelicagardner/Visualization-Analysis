@@ -118,7 +118,7 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
           </thead>
           {tableData.length ? (
             <tbody>
-              {tableData.map((d) => (
+              {tableData.slice(0, 10000).map((d) => (
                 <tr key={d.id}>
                   <td>{reformatTime(d.time)}</td>
                   <td>{d.location}</td>
