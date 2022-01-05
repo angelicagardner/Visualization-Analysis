@@ -9,7 +9,7 @@ const options = {
   enableTooltip: true,
   deterministic: false,
   fontFamily: 'impact',
-  fontSizes: [8, 100],
+  fontSizes: [8, 80],
   fontStyle: 'normal',
   fontWeight: 'normal',
   padding: 0,
