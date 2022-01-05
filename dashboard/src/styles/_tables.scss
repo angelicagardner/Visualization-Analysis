@@ -2,21 +2,68 @@
   box-shadow: 0 0.25rem 0.5rem 0 rgba(0, 0, 0, 0.25);
   border-radius: 1rem;
   border: none;
-  background-color: #ffffff;
+  background-color: #fff;
   font-family: 'Raleway', sans-serif;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  justify-content: space-between;
+  align-items: stretch;
+  padding: 5px;
 
-  div.table-title {
+  div.table-footer {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: auto;
-    padding: 0.5rem 1rem 0 1rem;
-  }
+    border-top: 1px dotted #a2a2a2;
+    width: 99%;
+    padding: 10px 5px;
 
-  .table-title h3 {
-    font-size: 1.2rem;
-    color: #4e5066;
+    .pagination {
+      padding-left: 1rem;
+      text-align: right;
+
+      button {
+        height: 1.5rem;
+        aspect-ratio: 1;
+        width: auto;
+        border-radius: 50%;
+        margin: 0 2px;
+        font-weight: 200;
+        border: 1px solid rgb(186, 186, 186);
+        color: rgb(74, 74, 74);
+
+        &:hover {
+          color: #fff;
+          background-color: #777;
+          border-color: #777;
+          cursor: pointer;
+        }
+
+        &.active {
+          font-size: medium;
+          color: #000;
+          background-color: rgb(255, 255, 255);
+          font-weight: bold;
+          border: none;
+        }
+      }
+    }
+
+    input {
+      height: 100%;
+      font-size: 1rem;
+      padding: 5px 10px;
+      min-width: 200px;
+    }
+
+    // Hide search drop-down
+    .react-search-box-dropdown {
+      display: none;
+    }
   }
 
   .no-data {
@@ -27,60 +74,63 @@
   /*** Table Styles **/
 
   .table-fill {
-    margin: auto;
-    padding: 0 1rem 1rem 1rem;
-    height: 19vh;
-    overflow-y: scroll;
-  }
+    margin: 5px 0 0 5px;
+    height: 85%;
+    overflow: auto;
 
-  table {
-    width: 100%;
-    border-spacing: 5px;
-    padding-bottom: 2rem;
-  }
-
-  thead {
-    td {
-      font-size: 0.85rem;
-      &:not(:last-child) {
-        min-width: 100px;
-      }
-      span {
-        padding-left: 5px;
-      }
-    }
-    td.span-sort.sorted {
-      span {
-        color: red;
-      }
-    }
-    td.span-sort {
-      cursor: pointer;
-    }
-  }
-
-  tbody {
-    font-size: 0.75rem;
-    font-weight: 300;
-
-    tr:hover td {
-      background: #9699af;
+    table {
+      width: 100%;
+      padding-bottom: 5px;
     }
 
-    tr:nth-child(odd) td {
-      background: #eaeaee;
-    }
-    tr:nth-child(odd):hover td {
-      background: #9699af;
-    }
-
-    td {
-      background: #ffffff;
-      padding: 0.2rem 0.35rem;
-      text-align: left;
-      vertical-align: middle;
-      border-radius: 5px;
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 1;
       border: none;
+      background-color: #ffffff;
+
+      th {
+        font-size: 0.75rem;
+        padding: 0px 5px 2px 0px;
+
+        span {
+          padding-left: 5px;
+        }
+      }
+      th.span-sort.sorted {
+        span {
+          color: red;
+        }
+      }
+      th.span-sort {
+        cursor: pointer;
+      }
+    }
+
+    tbody {
+      font-size: 0.75rem;
+      font-weight: 300;
+
+      tr:hover td {
+        background: #9699af;
+      }
+
+      tr:nth-child(odd) td {
+        background: #eaeaee;
+      }
+      tr:nth-child(odd):hover td {
+        background: #9699af;
+      }
+
+      td {
+        background: #ffffff;
+        padding: 0.2rem 0.5rem;
+        text-align: left;
+        vertical-align: middle;
+        border-radius: 5px;
+        border: none;
+      }
     }
   }
 

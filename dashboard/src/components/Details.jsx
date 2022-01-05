@@ -21,13 +21,14 @@ function Details({
           exit={{ left: '120vw' }}
           transition={{ duration: 0.7 }}
         >
-          <RidgeLine data={data} />
           <MessageTable
             sortingOrder={sortingOrder}
             searchQuery={searchQuery}
             data={data}
             update={update}
+            itemPerRow="500"
           />
+          <RidgeLine data={data} />
         </motion.div>
       ) : null}
     </AnimatePresence>
