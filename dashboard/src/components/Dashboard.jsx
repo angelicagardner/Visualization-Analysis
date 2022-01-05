@@ -230,6 +230,7 @@ class Dashboard extends Component {
             data={DataService.getMessageMeterData(
               this.state.data.filtered.length
             )}
+            opacity={this.state.layout.page === 'Messages' ? 1 : 0}
           />
         </div>
         <div className="main-container">
