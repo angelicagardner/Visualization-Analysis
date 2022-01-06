@@ -35,20 +35,7 @@ function MessageTable({
     return `${day} ${monthName} ${hours}:${minutes}`;
   };
 
-  const renderPagination = () => {
-    const btns = [];
-    for (let i = 0; i < Math.ceil(data.length / itemPerRow); i++) {
-      btns.push(
-        <button
-          className={page === i ? 'active' : ''}
-          onClick={() => setPage(i)}
-        >
-          {i + 1}
-        </button>
-      );
-    }
-    return btns;
-  };
+  const lastPage = Math.ceil(tableData.length / itemPerRow) - 1;
 
   return (
     <div className="messageTable">
@@ -176,7 +163,36 @@ function MessageTable({
             clickHandler(sortingOrder, search.toLowerCase());
           }}
         />
-        <div className="pagination">{renderPagination()}</div>
+        <div className="pagination">
+          <button onClick={() => setPage(0)} disabled={!page} title="first">
+            {'<<<'}
+          </button>
+          <button
+            onClick={() => setPage((page) => page - 1)}
+            disabled={!page}
+            title="previous"
+          >
+            {'<'}
+          </button>
+
+          <div className="page-number">
+            {page + 1} / {lastPage + 1}
+          </div>
+          <button
+            onClick={() => setPage((page) => page + 1)}
+            title="next"
+            disabled={page === lastPage}
+          >
+            {'>'}
+          </button>
+          <button
+            onClick={() => setPage((page) => lastPage)}
+            title="last"
+            disabled={page === lastPage}
+          >
+            {'>>>'}
+          </button>
+        </div>
       </div>
     </div>
   );
