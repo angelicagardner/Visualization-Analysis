@@ -163,15 +163,6 @@ class Dashboard extends Component {
       searchQuery: query,
     };
 
-    if (name === 'Messages' && this.hasNoFiler(newFilters)) {
-      if (
-        !window.confirm(
-          'The dataset is too large and processing might take time. You can make it smaller by adding some filters, otherwise press OK to continue.'
-        )
-      )
-        return;
-    }
-
     this.setState((state) => ({ ...state, ready: false }));
     setTimeout(async () => {
       switch (name) {
