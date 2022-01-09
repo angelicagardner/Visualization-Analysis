@@ -9,7 +9,7 @@ const options = {
   enableTooltip: true,
   deterministic: false,
   fontFamily: 'impact',
-  fontSizes: [8, 100],
+  fontSizes: [8, 80],
   fontStyle: 'normal',
   fontWeight: 'normal',
   padding: 0,
@@ -20,7 +20,7 @@ const options = {
   transitionDuration: 500,
 };
 
-function getCallback(callback) {
+function getCallback(callback, f) {
   return function (word, event) {
     const isActive = callback !== 'onWordMouseOut';
     const element = event.target;
@@ -28,7 +28,7 @@ function getCallback(callback) {
     text
       .on('click', () => {
         if (isActive) {
-          // window.open(`https://google.com/?q=${word.text}`, '_blank');
+          f(word.text);
         }
       })
       .transition()
@@ -36,7 +36,7 @@ function getCallback(callback) {
   };
 }
 
-function WordCloud({ layout, data }) {
+function WordCloud({ layout, data, update }) {
   const [words, setWords] = useState([]);
 
   useEffect(() => {
@@ -56,9 +56,9 @@ function WordCloud({ layout, data }) {
     },
     getWordTooltip: (word) =>
       `The word "${word.text}" appears ${word.value} times.`,
-    onWordClick: getCallback('onWordClick'),
-    onWordMouseOut: getCallback('onWordMouseOut'),
-    onWordMouseOver: getCallback('onWordMouseOver'),
+    onWordClick: getCallback('onWordClick', update),
+    onWordMouseOut: getCallback('onWordMouseOut', update),
+    onWordMouseOver: getCallback('onWordMouseOver', update),
   };
 
   return (

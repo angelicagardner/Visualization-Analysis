@@ -1,10 +1,23 @@
-import { useState } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import Plot from 'react-plotly.js';
 import Moment from 'moment';
 import { ColorService } from '../../services/color-service';
 
 function TimeLine({ update, timeRange, location, data, cluster }) {
   const [range, setRange] = useState([]);
+
+  function useWindowSize() {
+    const [size, setSize] = useState([0, 0]);
+    useLayoutEffect(() => {
+      function updateSize() {
+        setSize([window.innerWidth, window.innerHeight]);
+      }
+      window.addEventListener('resize', updateSize);
+      updateSize();
+      return () => window.removeEventListener('resize', updateSize);
+    }, []);
+    return size;
+  }
 
   const updateHandler = (e) => {
     if (e['xaxis.range[0]'] && e['xaxis.range[1]']) {
@@ -30,10 +43,16 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
     },
   ];
 
+  const getSelectedClusterName = () => {
+    return !cluster.name || cluster.name === ''
+      ? 'Selected cluster'
+      : cluster.name;
+  };
+
   if (data?.cluster) {
     plotData.push({
       x: data.cluster,
-      name: cluster.name,
+      name: getSelectedClusterName(),
       histnorm: 'count',
       marker: {
         color: ColorService.getClusterBaseColorById(cluster.id),
@@ -59,7 +78,7 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
   if (data?.full) {
     plotData.push({
       x: data.full,
-      name: `${location.name} & ${cluster.name}`,
+      name: `${location.name} & ${getSelectedClusterName()}`,
       histnorm: 'count',
       marker: {
         color: ColorService.getClusterColorById(cluster.id)[5],
@@ -68,6 +87,8 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
       type: 'histogram',
     });
   }
+
+  const [width] = useWindowSize();
 
   return (
     <Plot
@@ -80,7 +101,6 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
         title: {
           text: 'Message Distribution',
         },
-        margin: { l: 30, r: 30, t: 45, b: 45 },
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
         yaxis: {
@@ -104,10 +124,12 @@ function TimeLine({ update, timeRange, location, data, cluster }) {
           orientation: 'h',
           y: 100,
         },
+        margin: { pad: 5, t: 25, b: 45, r: 25, l: 50 },
       }}
       style={{
         margin: 0,
         padding: 0,
+        width: width,
         height: '20vh',
       }}
       onRelayout={updateHandler}

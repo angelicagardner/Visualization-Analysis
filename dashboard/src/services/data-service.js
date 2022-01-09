@@ -130,7 +130,7 @@ export class DataService {
 
     for (const key in temp) {
       ids.push(key);
-      labels.push('C' + key);
+      labels.push('');
       parents.push('');
       values.push(Object.keys(temp[key]).reduce((a, c) => a + temp[key][c], 0));
     }

@@ -83,6 +83,14 @@ function CustomMap({ selected, update, layout, data, cluster }) {
     loadData();
   }, [data, cluster.id]);
 
+  useEffect(() => {
+    setTooltip((state) => ({
+      ...state,
+      totalMessages:
+        selected.id !== undefined ? mapInfo.locations[selected.id].text : 0,
+    }));
+  }, [mapInfo, selected.id]);
+
   const setLocation = (e, title, id, totalMessages) => {
     if (layout.page === 'Overview')
       setTooltip({

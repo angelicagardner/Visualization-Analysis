@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react';
 import ReactSearchBox from 'react-search-box';
 
-function MessageTable({ sortingOrder, searchQuery, data, update }) {
+function MessageTable({
+  sortingOrder,
+  searchQuery,
+  data,
+  update,
+  itemPerRow = 100,
+}) {
   const [tableData, updateTableData] = useState(data, 1);
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     updateTableData(data);
@@ -15,24 +22,29 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
     return () => clearTimeout(delayDebounceFn);
   };
 
+  const reformatTime = (date) => {
+    let d = new Date(date);
+    let monthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
+      d
+    );
+    let day = d.getDate();
+    let hours = d.getHours();
+    hours = hours < 10 ? '0' + hours : hours;
+    let minutes = d.getMinutes();
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    return `${day} ${monthName} ${hours}:${minutes}`;
+  };
+
+  const lastPage = Math.ceil(tableData.length / itemPerRow) - 1;
+
   return (
     <div className="messageTable">
-      <div className="table-title">
-        <h3>Data Table</h3>
-        <ReactSearchBox
-          placeholder="Search..."
-          message=""
-          data={data}
-          onChange={(search) => {
-            clickHandler(sortingOrder, search.toLowerCase());
-          }}
-        />
-      </div>
       <div className="table-fill">
         <table>
           <thead>
             <tr>
-              <td
+              <th
+                width="7%"
                 className={
                   'span-sort' +
                   (sortingOrder === undefined ||
@@ -49,8 +61,9 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
               >
                 Time
                 {sortingOrder !== 'timeDESC' ? <span>▼</span> : <span>▲</span>}
-              </td>
-              <td
+              </th>
+              <th
+                width="8%"
                 className={
                   'span-sort' +
                   (sortingOrder === 'locationASC' ||
@@ -74,8 +87,9 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
                 ) : (
                   ''
                 )}
-              </td>
-              <td
+              </th>
+              <th
+                width="10%"
                 className={
                   'span-sort' +
                   (sortingOrder === 'accountASC' ||
@@ -95,27 +109,90 @@ function MessageTable({ sortingOrder, searchQuery, data, update }) {
                 ) : (
                   <span>▲</span>
                 )}
-              </td>
-              <td>Messages</td>
-              <td>Tags</td>
+              </th>
+              <th width="70%">Messages</th>
+              <th width="5%">Tags</th>
             </tr>
           </thead>
           {tableData.length ? (
             <tbody>
-              {tableData.map((d) => (
-                <tr key={d.id}>
-                  <td>{d.time}</td>
-                  <td>{d.location}</td>
-                  <td>{d.account}</td>
-                  <td>{d.message}</td>
-                  <td>{d.words.map((w) => w.name).join(', ')}</td>
-                </tr>
-              ))}
+              {tableData
+                .slice(
+                  page * itemPerRow,
+                  Math.min((page + 1) * itemPerRow, tableData.length)
+                )
+                .map((d) => (
+                  <tr key={d.id}>
+                    <td>{reformatTime(d.time)}</td>
+                    <td>{d.location}</td>
+                    <td>{d.account}</td>
+                    <td>
+                      {d.message.split(' ').map((m) => (
+                        <span>
+                          {m
+                            .toLowerCase()
+                            .replace('?', '')
+                            .replace('!', '')
+                            .replace('.', '')
+                            .replace(',', '') === searchQuery ? (
+                            <span className="search">{m} </span>
+                          ) : (
+                            m + ' '
+                          )}
+                        </span>
+                      ))}
+                    </td>
+                    <td>{d.words.map((w) => w.name).join(', ')}</td>
+                  </tr>
+                ))}
             </tbody>
           ) : (
             <p className="no-data">No messages found.</p>
           )}
         </table>
+      </div>
+      <div className="table-footer">
+        <ReactSearchBox
+          placeholder={
+            searchQuery === undefined || searchQuery === ''
+              ? 'Search...'
+              : searchQuery
+          }
+          data={data}
+          onChange={(search) => {
+            clickHandler(sortingOrder, search.toLowerCase());
+          }}
+        />
+        <div className="pagination">
+          <button onClick={() => setPage(0)} disabled={!page} title="first">
+            {'<<<'}
+          </button>
+          <button
+            onClick={() => setPage((page) => page - 1)}
+            disabled={!page}
+            title="previous"
+          >
+            {'<'}
+          </button>
+
+          <div className="page-number">
+            {page + 1} / {lastPage + 1}
+          </div>
+          <button
+            onClick={() => setPage((page) => page + 1)}
+            title="next"
+            disabled={page === lastPage}
+          >
+            {'>'}
+          </button>
+          <button
+            onClick={() => setPage((page) => lastPage)}
+            title="last"
+            disabled={page === lastPage}
+          >
+            {'>>>'}
+          </button>
+        </div>
       </div>
     </div>
   );

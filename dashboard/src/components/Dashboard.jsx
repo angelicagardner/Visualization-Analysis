@@ -86,6 +86,7 @@ class Dashboard extends Component {
         ...this.state.data,
         map: await this.service.getLocations(newFilters),
         wordCloud: await this.service.getKeywords(newFilters),
+        timeline: await this.service.getTimeline(newFilters),
         filtered: await this.service.getFilteredMessages(newFilters),
       },
       ready: true,
@@ -146,56 +147,75 @@ class Dashboard extends Component {
     });
   }
 
-  async switchTab(name) {
-    switch (name) {
-      case 'Overview':
-        const newFilters = {
-          ...this.state.filters,
-          searchQuery: undefined,
-        };
-        this.setState({
-          messages: [],
-          data: {
-            ...this.state.data,
-            filtered: await this.service.getFilteredMessages(newFilters),
-          },
-          layout: {
-            ...this.state.layout,
-            page: 'Overview',
-            map: {
-              bottom: 0,
-              left: '40vw',
-              width: '60%',
+  hasNoFiler(filters) {
+    return (
+      filters.cluster.id === undefined &&
+      filters.location.id === undefined &&
+      filters.searchQuery === undefined &&
+      filters.timeRange.start === undefined &&
+      filters.timeRange.end === undefined
+    );
+  }
+
+  async switchTab(name, query) {
+    const newFilters = {
+      ...this.state.filters,
+      searchQuery: query,
+    };
+
+    this.setState((state) => ({ ...state, ready: false }));
+    setTimeout(async () => {
+      switch (name) {
+        case 'Overview':
+          this.setState({
+            messages: [],
+            data: {
+              ...this.state.data,
+              filtered: await this.service.getFilteredMessages(newFilters),
             },
-            wordCloud: { visible: true },
-            details: {
-              visible: false,
+            layout: {
+              ...this.state.layout,
+              page: 'Overview',
+              map: {
+                bottom: 0,
+                left: '40vw',
+                width: '60%',
+              },
+              wordCloud: { visible: true },
+              details: {
+                visible: false,
+              },
             },
-          },
-          ready: true,
-        });
-        break;
-      case 'Details':
-        this.setState({
-          layout: {
-            ...this.state.layout,
-            page: 'Details',
-            map: {
-              bottom: '35vh',
-              left: '0vw',
-              width: '40%',
+            ready: true,
+          });
+          break;
+        case 'Messages':
+          this.setState({
+            filters: newFilters,
+            data: {
+              ...this.state.data,
+              filtered: await this.service.getFilteredMessages(newFilters),
             },
-            wordCloud: { visible: false },
-            details: {
-              visible: true,
+            layout: {
+              ...this.state.layout,
+              page: 'Messages',
+              map: {
+                bottom: '35vh',
+                left: '0vw',
+                width: '40%',
+              },
+              wordCloud: { visible: false },
+              details: {
+                visible: true,
+              },
             },
-          },
-          ready: true,
-        });
-        break;
-      default:
-        console.log('Invalid tab name');
-    }
+            ready: true,
+          });
+          break;
+        default:
+          console.log('Invalid tab name');
+      }
+    }, 0);
   }
 
   render() {
@@ -218,12 +238,13 @@ class Dashboard extends Component {
           <h1>Visual Explorer</h1>
           <Navigator
             tab={this.state.layout.page}
-            update={(name) => this.switchTab(name)}
+            update={(name) => this.switchTab(name, undefined)}
           />
           <MessageMeter
             data={DataService.getMessageMeterData(
               this.state.data.filtered.length
             )}
+            opacity={this.state.layout.page === 'Messages' ? 1 : 0}
           />
         </div>
         <div className="main-container">
@@ -231,6 +252,7 @@ class Dashboard extends Component {
             <WordCloud
               layout={this.state.layout}
               data={this.state.data.wordCloud}
+              update={(word) => this.switchTab('Messages', word)}
             />
             <div className="sunburst" key="sunburst">
               <SunBurst
