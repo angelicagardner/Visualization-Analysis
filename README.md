@@ -2,6 +2,8 @@
 
 _by Angelica Hjelm Gardner and Omid Golshan Tafti_
 
+![A Screen shot of the dashboard](./Screenshot_2022-01-09.png)
+
 ## Build
 
 Create a virtual network by running
