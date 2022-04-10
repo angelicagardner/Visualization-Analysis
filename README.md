@@ -17,3 +17,7 @@ From root directory run following command to build all required images
 and finally run containers with
 
     docker-compose up -d
+
+## Note
+
+This repository is a hands-on part of a course project. Therefore, it's short-lived without long-term maintenance.
